@@ -139,6 +139,7 @@ function get_business($business_id) {
  */
 function query_api($term, $location) {     
     $response = search($term, $location);
+    
     echo $response;
 }
 

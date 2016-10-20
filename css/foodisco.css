@@ -55,11 +55,16 @@ body {
 
 .jumbotron{
     text-align:center;
+    background-color:white;
+    padding-left:0px;
+    padding-right:0px;
+    padding-top:60px;
+    padding-bottom: 40px;
 }
 
-#location{
+#location-nav{
     margin-top:40px;
-    margin-bottom:20px;
+    width:100%;
 }
 
 .nav-pills>li.active>a{
@@ -78,15 +83,26 @@ a.btn{
     background-color: #d9001d;;
 }
 
-#output{
-    background-color:#d9001d;
-    border-radius:10px;
-    padding:50px;
-    color:white;
-/*
-    white-space: pre;
-    overflow: scroll;
-*/
+.output{
+    margin-top:-20px;
+    margin-bottom: 20px;
+    border-radius:8px;
+    background-color:white;
+    padding:20px;
+    color:#d9001d;
+    -webkit-box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
+    -moz-box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
+    box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
+}
+
+#image{
+    border-radius:8px;
+    float:right;
+}
+
+#restaurant-desc{
+    text-align: left;
+    color:black;
 }
 
 /*Change glow of input to red*/
@@ -128,9 +144,27 @@ a{color:black;}
   .container {
     max-width: 730px;
   }
+  .container .jumbotron, .container-fluid .jumbotron {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
+
+@media screen and (max-width:991px){
+    #image{
+        float:none;
+    }
+    #restaurant-desc{
+        text-align: center;
+    }
 }
 @media screen and (max-width:768px){
     #brand{
+        display: none;
+    }
+}
+@media screen and (max-width:400px){
+    #gps{
         display: none;
     }
 }

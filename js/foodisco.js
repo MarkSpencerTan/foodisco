@@ -53,10 +53,12 @@ function updateRestaurant(jsonobj){
     $image = $RESTAURANT_OBJ.image_url;
     $name = $RESTAURANT_OBJ.name;
     
-    $("#output").html(
-        "<h2>" + $name + "</h2>"+
-        "<img src='" + $image + "'/>"
-    );
+    $("#name").html($name);
+    $("#image").attr('src',$image);
+    
+    //Collapses The Output Div
+    $("#output").collapse("toggle");
+    $("#output").removeAttr("id");
     
     //replaces Search Button to Disco Again
     $("#search").text("Disco Again");
