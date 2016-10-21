@@ -124,6 +124,19 @@ a{color:black;}
   margin: 30px 0;
 }
 
+#yelpicon{
+    float:right;
+    margin-top:-12px;
+}
+
+#see-more img{
+    margin-top: -7px;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
