@@ -16,6 +16,13 @@ $('document').ready(function() {
             $('#search').click();//Trigger search button click event
         }
     });
+	//gps
+	$('#gps').click(function(e) {
+		e.preventDefault();
+		geolocationCaller(function(loc){
+			$("#location").val(loc);
+		});
+	});
 });
 
 /**  
@@ -45,7 +52,7 @@ function apiCaller($location){
 function updateRestaurant(jsonobj){
     $restaurants = jsonobj.businesses;
     
-    $pos = Math.floor(Math.random() * 15);  //creates a random integer(0-15)
+    $pos = Math.floor(Math.random() * $restaurants.length);  //creates a random integer(0-15)
     console.log("Pos: "+$pos);
     
     console.log($restaurants[$pos]);
@@ -88,4 +95,52 @@ function updateRestaurant(jsonobj){
     //replaces Search Button to Disco Again
     $("#search").text("Disco Again");
     
+}
+
+function geolocationCaller(autofillCallback){
+	$.get('../scripts/keys/geolocationkey.txt', function(data) {
+   		$GEOLOCATION_KEY = data;
+		$.ajax({
+		type: 'POST',
+		url: "https://www.googleapis.com/geolocation/v1/geolocate?key=" + $GEOLOCATION_KEY,
+		dataType : "json",
+		success:function(result){
+			var locJSON = JSON.stringify(result, null, 4);
+			var locObj = JSON.parse(locJSON);
+			reverseGeocodingCaller(locObj.location.lat, locObj.location.lng, autofillCallback);
+		},
+		error:function(){
+			console.log("Geolocation failed");
+			//alert("");
+		}
+	});
+	}, 'text');
+	
+	
+}
+
+function reverseGeocodingCaller(lat, lng, autofillCallback){
+	$.get('../scripts/keys/geocodingkey.txt', function(data) {
+   		$GEOCODING_KEY = data;
+		$.ajax({
+		type: 'POST',
+		url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat +"," + lng + 
+		"&key=" + $GEOCODING_KEY,
+		dataType : "json",
+		success:function(result){
+			var locJSON = JSON.stringify(result, null, 4);
+			var locObj = JSON.parse(locJSON);
+			var city = locObj.results[0].address_components[2].long_name;
+			var state = locObj.results[0].address_components[4].short_name;
+			var country = locObj.results[0].address_components[5].short_name;
+			var locStr = city + ", " + state + ", " + country;
+			autofillCallback(locStr);
+		},
+		error:function(){
+			console.log("Reverse geocoding failed");
+			//alert("");
+		}
+	});	
+	}, 'text');
+	
 }
