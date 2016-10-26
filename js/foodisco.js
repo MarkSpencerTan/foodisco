@@ -1,4 +1,5 @@
 $RESTAURANT_OBJ = null;
+$jsonobject = null;
 
 //The Main of the script
 $('document').ready(function() {
@@ -8,7 +9,11 @@ $('document').ready(function() {
         e.preventDefault();
         $loc = $('#location').val();    //takes location bar's userinput
     
-        apiCaller($loc);
+    	if($jsonobject == null) {
+            apiCaller($loc);
+    	}
+        else
+            updateRestaurant($jsonobject);
     });
     // Enter key pressed on the location bar
     $('#location').keypress(function(e){
@@ -23,13 +28,19 @@ $('document').ready(function() {
 			$("#location").val(loc);
 		});
 	});
+    
+    // Trigger event handler that will fire when apicaller is finished calling.
+    $(document).on('updateinfo', function(event, data){
+        $jsonobject = data;
+        updateRestaurant($jsonobject);
+    });
 });
 
 /**  
  *  A function that calls the api for a Restaurant JSON Object
  *  @param  $location   Location of the user
  */
-function apiCaller($location){
+function apiCaller($location, callback){
     $.ajax({
         type: 'GET',
         url: "scripts/sample.php",
@@ -39,8 +50,7 @@ function apiCaller($location){
               },
         
         success:function(result){
-//            console.log(JSON.stringify(result, null, 4));
-            updateRestaurant(result);
+            $(document).triggerHandler('updateinfo', [result]);
         },
         error:function(){
             console.log("Failed to load php");
