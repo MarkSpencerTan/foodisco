@@ -1,5 +1,6 @@
 $RESTAURANT_OBJ = null;
 $jsonobject = null;
+$savedlocation = "";
 
 //The Main of the script
 $('document').ready(function() {
@@ -8,9 +9,13 @@ $('document').ready(function() {
     $('#search').click(function(e) {
         e.preventDefault();
         $loc = $('#location').val();    //takes location bar's userinput
-    
-    	if($jsonobject == null) {
+        
+        //if the value on the var is not the same as the previous saved location
+        //call the api for a new restaurant
+    	if($loc != $savedlocation) {
             apiCaller($loc);
+            console.log($savedlocation);
+            console.log("Thing in bar: "+ $loc)
     	}
         else
             updateRestaurant($jsonobject);
@@ -32,6 +37,7 @@ $('document').ready(function() {
     // Trigger event handler that will fire when apicaller is finished calling.
     $(document).on('updateinfo', function(event, data){
         $jsonobject = data;
+        $savedlocation = $('#location').val();
         updateRestaurant($jsonobject);
     });
 });

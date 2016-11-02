@@ -43,36 +43,27 @@
       <div class="jumbotron">
         <img class="img-responsive center-block" src="img/foodisco_logo.png">
           
-        <nav id="location-nav" class="navbar navbar-default">
-          <div class="container-fluid">
-                <div class="col-sm-9" style="padding:10px">
-                  <input style="" id="location" type="text" class="form-control" placeholder="Enter a location...">
+          <div style="margin-top:40px; margin-bottom:40px;" class="col-sm-12">
+            <div class="input-group">
+              <input id="location" type="text" class="form-control" placeholder="Enter a location...">
+              <span class="input-group-btn">
+                <button id="gps" class="btn">
+                  <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="filter" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Filter&nbsp;<span class="caret"</span>
+                </button>
+                <div class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li
+                  <li><div role="separator" class="dropdown-divider"></div></li>
+                  <li><a class="dropdown-item" href="#">Separated link</a></li>
                 </div>
-                <div class="row">
-                    <div class="col-sm-3" style="text-align:center;">
-                          <ul class="nav navbar-nav navbar-right">
-                            <li><a id="gps" href="#"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span></a></li>
-                            <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filter <span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                              </ul>
-                            </li>
-                          </ul>
-                    </div>
-                </div>
+              </span>
+            </div>
           </div><!-- /.container-fluid -->
-        </nav>
-          
-<!--
-        <div class="form-group">
-            <input id="location" class="form-control" placeholder="Enter a location..."/>
-        </div>
--->
+                    
         <div id="output" class="collapse output">
             <b><h2 id="name">Restaurant Name</h2></b><hr>
             <div class="row">
@@ -86,26 +77,46 @@
                     <h4 id="address">1234 Street Ave. <br>Long Beach, CA</h4>
                     <a href=""  target="_blank" id="see-more"><h4 >See More on <img src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/95212dafe621/assets/img/yelp-2c.png" height="40" width="70"></h4></a>
                 </div>
-            
-            </div>
-            
-            
-            
+            </div>  
         </div>
+          
         <p class="text-muted">Discover new places to eat</p>
         <p><a id="search" class="btn btn-lg btn-danger" href="#" role="button">Search</a></p>
+          
+        <!--View Skipped List Modal Link  -->
+        <a class="text-muted" data-toggle="modal" data-target="#skipped_modal" href="#">View Skipped List</a>  
       </div>
         
+      <!-- Modal -->
+      <div class="modal fade" id="skipped_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-sm" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+             <h4 class="modal-title" id="myModalLabel">Skipped Restaurants</h4>
+           </div>
+           <div id="skipped" class="modal-body">
+             ...<br>..<br>...
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+      </div>
       
-
-      
+      <div id="map" style="width:100%; height:300px;"></div>
 
       <footer class="footer">
         <p>&copy; 2016 Space Monkey.<img id="yelpicon" src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/ad84e7a1a8bc/assets/img/logo-white.png" height="40" width="70"/></p>
         
       </footer>
 
-    </div> <!-- /container -->    
+    </div> <!-- /container -->
+      
+    
       
       
       
@@ -114,15 +125,30 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="js/foodisco.js"  ></script>
+    
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyCLcz6lzSwBCxBH505lg4gandQLT05YS6I&libraries=places&language=en-AU"></script>
+    
+    <script>
+        var autocomplete = new google.maps.places.Autocomplete($("#location")[0], {});
+
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            var place = autocomplete.getPlace();
+            console.log(place.address_components);
+        });
         
-        
-        
-        
-      
-      
+        var map;
+        function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 8
+          });
+        }
+    </script>
     
     
- 
+    
+      
+    <script src="js/foodisco.js"></script>
+
   </body>
 </html>
