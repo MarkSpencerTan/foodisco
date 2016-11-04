@@ -1,6 +1,9 @@
 $RESTAURANT_OBJ = null;
 $jsonobject = null;
 $savedlocation = "";
+$skippedList = [];
+$currentLong = 100;
+$currentLat = -100;
 
 //The Main of the script
 $('document').ready(function() {
@@ -14,23 +17,25 @@ $('document').ready(function() {
         //call the api for a new restaurant
     	if($loc != $savedlocation) {
             apiCaller($loc);
-            console.log($savedlocation);
-            console.log("Thing in bar: "+ $loc)
     	}
         else
             updateRestaurant($jsonobject);
+        $('#description-tab').tab('show');
     });
     // Enter key pressed on the location bar
     $('#location').keypress(function(e){
         if(e.which == 13) {
             $('#search').click();//Trigger search button click event
+            
         }
     });
 	//gps
 	$('#gps').click(function(e) {
 		e.preventDefault();
-		geolocationCaller(function(loc){
+		geolocationCaller(function(loc, lat, long){
 			$("#location").val(loc);
+            $currentLong = long;
+            $currentLat = lat;
 		});
 	});
     
@@ -68,10 +73,11 @@ function apiCaller($location, callback){
 function updateRestaurant(jsonobj){
     $restaurants = jsonobj.businesses;
     
-    $pos = Math.floor(Math.random() * $restaurants.length);  //creates a random integer(0-15)
+    $pos = Math.floor(Math.random() * $restaurants.length);  //chooses random index
     console.log("Pos: "+$pos);
     
     console.log($restaurants[$pos]);
+
     $RESTAURANT_OBJ = $restaurants[$pos];
     $image = $RESTAURANT_OBJ.image_url;
     $name = $RESTAURANT_OBJ.name;
@@ -111,6 +117,12 @@ function updateRestaurant(jsonobj){
     //replaces Search Button to Disco Again
     $("#search").text("Disco Again");
     
+    //remove the restaurant in the view and add it to the skipped list
+    $skippedList.push($restaurants.splice($pos, 1)[0]);
+    console.log($skippedList);
+	//TODO: add restaurants to skipped list on frontend
+	//when restaurants list is empty, query API again
+	//with original length as offset. &offset=LENGTH or something like that.
 }
 
 function geolocationCaller(autofillCallback){
@@ -123,11 +135,12 @@ function geolocationCaller(autofillCallback){
 		success:function(result){
 			var locJSON = JSON.stringify(result, null, 4);
 			var locObj = JSON.parse(locJSON);
+            
+            // reverse geocode the lat and long to fill in the address on the location bar.
 			reverseGeocodingCaller(locObj.location.lat, locObj.location.lng, autofillCallback);
 		},
 		error:function(){
 			console.log("Geolocation failed");
-			//alert("");
 		}
 	});
 	}, 'text');
@@ -150,7 +163,9 @@ function reverseGeocodingCaller(lat, lng, autofillCallback){
 			var state = locObj.results[0].address_components[4].short_name;
 			var country = locObj.results[0].address_components[5].short_name;
 			var locStr = city + ", " + state + ", " + country;
-			autofillCallback(locStr);
+          
+            var coordinates = "ll="+lat+","+lng;
+			autofillCallback(locStr, lat, lng);
 		},
 		error:function(){
 			console.log("Reverse geocoding failed");
@@ -160,3 +175,44 @@ function reverseGeocodingCaller(lat, lng, autofillCallback){
 	}, 'text');
 	
 }
+
+ function initMap() {
+            var autocomplete = new google.maps.places.Autocomplete($("#location")[0], {});
+
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                var place = autocomplete.getPlace();
+                $currentLat = place.geometry.location.lat();
+                $currentLong = place.geometry.location.lng();
+            });
+            
+            var map;
+            var marker;
+            var latlng = {lat: $currentLat, lng: $currentLong};
+            
+            var restLoc = 
+            map = new google.maps.Map(document.getElementById('map'), {
+                  zoom: 14,
+            });
+            
+            marker = new google.maps.Marker({
+                position: latlng,
+                map: map
+            });
+     
+            var restMarker;
+            var restLat = $RESTAURANT_OBJ.location.coordinate.latitude;
+            var restLng = $RESTAURANT_OBJ.location.coordinate.longitude;
+          
+            restMarker = new google.maps.Marker({
+                position: {lat: restLat, lng: restLng},
+                map: map,
+                icon: "../img/foodiscomarker.png"
+            });
+          
+            
+          
+            google.maps.event.addListenerOnce(map, 'idle', function() {
+                google.maps.event.trigger(map, 'resize');
+                map.setCenter(latlng);
+            });
+    }

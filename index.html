@@ -65,19 +65,37 @@
           </div><!-- /.container-fluid -->
                     
         <div id="output" class="collapse output">
-            <b><h2 id="name">Restaurant Name</h2></b><hr>
-            <div class="row">
-                <div id="img-col" class="col-md-6">
-                    <a id="img-link"  target="_blank" href="https://www.yelp.com/biz/beachwood-brewing-and-bbq-long-beach?adjust_creative=um2sdJbDRG4wyZxruzTmhQ&utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=um2sdJbDRG4wyZxruzTmhQ"><img id="image" class="img-thumbnail" height=120 width=120 src=""/></a>
-                </div>
-                <div id="restaurant-desc" class="col-md-6">
-                    <img id="rating" src="https://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png"/>
-                    <h4 id="category">Mexican, Italian</h4>
-                    <h4 id="phone">562-800-8888</h4>
-                    <h4 id="address">1234 Street Ave. <br>Long Beach, CA</h4>
-                    <a href=""  target="_blank" id="see-more"><h4 >See More on <img src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/95212dafe621/assets/img/yelp-2c.png" height="40" width="70"></h4></a>
-                </div>
-            </div>  
+          
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a id="description-tab" href="#description" aria-controls="home" role="tab" data-toggle="tab">Restaurant</a></li>
+            <li role="presentation"><a href="#map" onclick="initMap()"aria-controls="profile" role="tab" data-toggle="tab">Map</a></li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="description">
+              <b><h2 id="name">Restaurant Name</h2></b><hr>
+              <div class="row">
+                  <div id="img-col" class="col-md-6">
+                      <a id="img-link"  target="_blank" href="https://www.yelp.com/biz/beachwood-brewing-and-bbq-long-beach?adjust_creative=um2sdJbDRG4wyZxruzTmhQ&utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=um2sdJbDRG4wyZxruzTmhQ"><img id="image" class="img-thumbnail" height=120 width=120 src=""/></a>
+                  </div>
+                  <div id="restaurant-desc" class="col-md-6">
+                      <img id="rating" src="https://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png"/>
+                      <h4 id="category">Mexican, Italian</h4>
+                      <h4 id="phone">562-800-8888</h4>
+                      <h4 id="address">1234 Street Ave. <br>Long Beach, CA</h4>
+                      <a href=""  target="_blank" id="see-more"><h4 >See More on <img src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/95212dafe621/assets/img/yelp-2c.png" height="40" width="70"></h4></a>
+                  </div>
+              </div>  
+            </div>
+            <div role="tabpanel" class="tab-pane" id="map">
+              </div>
+
+          </div>
+          
+          
+            
         </div>
           
         <p class="text-muted">Discover new places to eat</p>
@@ -107,7 +125,6 @@
        </div>
       </div>
       
-      <div id="map" style="width:100%; height:300px;"></div>
 
       <footer class="footer">
         <p>&copy; 2016 Space Monkey.<img id="yelpicon" src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/ad84e7a1a8bc/assets/img/logo-white.png" height="40" width="70"/></p>
@@ -125,29 +142,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyCLcz6lzSwBCxBH505lg4gandQLT05YS6I&libraries=places&language=en-AU"></script>
-    
-    <script>
-        var autocomplete = new google.maps.places.Autocomplete($("#location")[0], {});
-
-        google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            var place = autocomplete.getPlace();
-            console.log(place.address_components);
-        });
-        
-        var map;
-        function initMap() {
-          map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -34.397, lng: 150.644},
-            zoom: 8
-          });
-        }
-    </script>
-    
-    
-    
       
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLcz6lzSwBCxBH505lg4gandQLT05YS6I&libraries=places&callback=initMap"
+        async defer></script>
+  
     <script src="js/foodisco.js"></script>
 
   </body>
