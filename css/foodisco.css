@@ -92,10 +92,9 @@ a.btn{
     box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
 }
 
-#map {
-    width: 630px;
-        height: 400px;
-      }
+#map{
+	height: 400px;
+}
 
 
 #image{
@@ -139,8 +138,8 @@ a:hover{
 }
 
 /*Skipped List Modal*/
-#skipped_modal{
-   top:30%;
+#skipped{
+	text-align: center;
 }
 
 button#gps, button#filter{

@@ -22,6 +22,7 @@ $('document').ready(function() {
             updateRestaurant($jsonobject);
         $('#description-tab').tab('show');
     });
+	
     // Enter key pressed on the location bar
     $('#location').keypress(function(e){
         if(e.which == 13) {
@@ -29,7 +30,8 @@ $('document').ready(function() {
             
         }
     });
-	//gps
+	
+	//gps icon selects the user's current location
 	$('#gps').click(function(e) {
 		e.preventDefault();
 		geolocationCaller(function(loc, lat, long){
@@ -45,6 +47,37 @@ $('document').ready(function() {
         $savedlocation = $('#location').val();
         updateRestaurant($jsonobject);
     });
+  
+    // Event handler for skip list link. Will display the items from the $skippedList
+	$("#viewskipped").click(function(e){
+		$skippedContent = "";
+		for(var i=0; i<$skippedList.length; i++){
+			$skippedContent+= "<a href='" + i + "'><h3>" + $skippedList[i].name + "</h3></a>";
+			$skippedContent+= "<img class='img-thumbnail' src='" + $skippedList[i].image_url + "'>";
+			$skippedContent+= "<hr>"
+		}
+		$("#skipped").html($skippedContent);
+	});
+	
+	// Event handler for when the user clicks on an item on the skipped list
+	$(document).on('click', '#skipped a', function(e) {
+		e.preventDefault();
+		// strips out the position # of the item on the list
+		$position = $(this).attr('href');
+		console.log($position);
+		// update the restaurant details ui by passing in the restaurant obj from the list
+		simpleUpdate($skippedList[$position]);
+		//close the skipped list modal popup
+		$('#skipped_modal').modal('hide');
+		// move tab back to restaurant desc if it was in the map
+		$('#description-tab').tab('show');
+	});
+	
+	// clears the skip list
+	$("#clear_skipped").click(function(e){
+		$skippedList = [];
+		$("#skipped").html("");
+	});
 });
 
 /**  
@@ -70,6 +103,7 @@ function apiCaller($location, callback){
     });
 }
 
+// updates Restaurant view taking in a jsonobject from the api
 function updateRestaurant(jsonobj){
     $restaurants = jsonobj.businesses;
     
@@ -124,6 +158,41 @@ function updateRestaurant(jsonobj){
 	//when restaurants list is empty, query API again
 	//with original length as offset. &offset=LENGTH or something like that.
 }
+
+// A function that simply updates the restaurant view taking in a restaurant object as a param
+function simpleUpdate(restaurantObj){
+	$RESTAURANT_OBJ = restaurantObj;
+    $image = $RESTAURANT_OBJ.image_url;
+    $name = $RESTAURANT_OBJ.name;
+    $phone = $RESTAURANT_OBJ.phone;
+    $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
+    $addressObject = $RESTAURANT_OBJ.location.address;
+    $city = $RESTAURANT_OBJ.location.city;
+    $rating = $RESTAURANT_OBJ.rating_img_url_large;
+    $categories = $RESTAURANT_OBJ.categories;
+    $url = $RESTAURANT_OBJ.url;
+
+	$streetAddress = "";
+
+	for (var i = 0; i < $addressObject.length; i++) {
+   		$streetAddress += $addressObject[i] +"\n";
+	}
+    $streetAddress += $city;
+    $categories_content = $categories[0][0] ;
+    if($categories.length > 1){
+        $categories_content += ", "+$categories[1][0];
+    }
+    
+    $("#name").html($name);
+    $("#image").attr('src',$image);
+    $("#rating").attr('src', $rating);
+    $("#img-link").attr('href', $url);
+    $("#see-more").attr('href', $url);
+    $("#address").text($streetAddress);
+    $("#phone").text($phone);
+    $("#category").text($categories_content);
+}
+
 
 function geolocationCaller(autofillCallback){
 	$.get('../scripts/keys/geolocationkey.txt', function(data) {
