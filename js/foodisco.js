@@ -18,8 +18,15 @@ $('document').ready(function() {
     	if($loc != $savedlocation) {
             apiCaller($loc);
     	}
-        else
-            updateRestaurant($jsonobject);
+        else{
+			//remove the restaurant in the view and add it to the skipped list
+			$skippedList.push($jsonobject.businesses.splice($pos, 1)[0]);
+			console.log($skippedList);
+			//TODO: 
+			//when restaurants list is empty, query API again
+			//with original length as offset. &offset=LENGTH or something like that.
+			updateRestaurant($jsonobject);
+		}
         $('#description-tab').tab('show');
     });
 	
@@ -151,12 +158,7 @@ function updateRestaurant(jsonobj){
     //replaces Search Button to Disco Again
     $("#search").text("Disco Again");
     
-    //remove the restaurant in the view and add it to the skipped list
-    $skippedList.push($restaurants.splice($pos, 1)[0]);
-    console.log($skippedList);
-	//TODO: add restaurants to skipped list on frontend
-	//when restaurants list is empty, query API again
-	//with original length as offset. &offset=LENGTH or something like that.
+    
 }
 
 // A function that simply updates the restaurant view taking in a restaurant object as a param
@@ -245,43 +247,73 @@ function reverseGeocodingCaller(lat, lng, autofillCallback){
 	
 }
 
- function initMap() {
-            var autocomplete = new google.maps.places.Autocomplete($("#location")[0], {});
+function initMap() {
+		var autocomplete = new google.maps.places.Autocomplete($("#location")[0], {});
 
-            google.maps.event.addListener(autocomplete, 'place_changed', function() {
-                var place = autocomplete.getPlace();
-                $currentLat = place.geometry.location.lat();
-                $currentLong = place.geometry.location.lng();
-            });
-            
-            var map;
-            var marker;
-            var latlng = {lat: $currentLat, lng: $currentLong};
-            
-            var restLoc = 
-            map = new google.maps.Map(document.getElementById('map'), {
-                  zoom: 14,
-            });
-            
-            marker = new google.maps.Marker({
-                position: latlng,
-                map: map
-            });
-     
-            var restMarker;
-            var restLat = $RESTAURANT_OBJ.location.coordinate.latitude;
-            var restLng = $RESTAURANT_OBJ.location.coordinate.longitude;
-          
-            restMarker = new google.maps.Marker({
-                position: {lat: restLat, lng: restLng},
-                map: map,
-                icon: "../img/foodiscomarker.png"
-            });
-          
-            
-          
-            google.maps.event.addListenerOnce(map, 'idle', function() {
-                google.maps.event.trigger(map, 'resize');
-                map.setCenter(latlng);
-            });
-    }
+		google.maps.event.addListener(autocomplete, 'place_changed', function() {
+			var place = autocomplete.getPlace();
+			$currentLat = place.geometry.location.lat();
+			$currentLong = place.geometry.location.lng();
+		});
+
+
+		map = new google.maps.Map(document.getElementById('map'), {
+			  zoom: 13,
+		});
+
+		var map;
+		var marker;
+		var latlng = {lat: $currentLat, lng: $currentLong};   
+		var restMarker;
+		var restLat = $RESTAURANT_OBJ.location.coordinate.latitude;
+		var restLng = $RESTAURANT_OBJ.location.coordinate.longitude;
+		var pointA = new google.maps.LatLng($currentLat, $currentLong);
+		var pointB = new google.maps.LatLng(restLat, restLng);
+
+
+		marker = new google.maps.Marker({
+			position: pointA,
+			title: "point A",
+			label: "A",
+			map: map
+		});
+
+
+		restMarker = new google.maps.Marker({
+			position: pointB,
+			title: "point B",
+			map: map,
+			icon: "../img/foodiscomarker.png"
+		});
+
+
+		directionsService = new google.maps.DirectionsService,
+		directionsDisplay = new google.maps.DirectionsRenderer({
+			suppressMarkers: true,
+		  map: map
+		}),   
+
+		google.maps.event.addListenerOnce(map, 'idle', function() {
+			google.maps.event.trigger(map, 'resize');
+			map.setCenter(pointA);
+		});  
+
+		calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
+
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
+	directionsService.route({
+		origin: pointA,
+		destination: pointB,
+		travelMode: google.maps.TravelMode.DRIVING
+		}, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				directionsDisplay.setDirections(response);
+			} 
+			else {
+				window.alert('Directions request failed due to ' + status);
+			}
+		}
+	);
+}
