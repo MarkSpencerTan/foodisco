@@ -4,6 +4,9 @@ $savedlocation = "";
 $skippedList = [];
 $currentLong = 100;
 $currentLat = -100;
+$excludeList = []; //yelp ids of excluded restaurants
+$expireStr = "expires=Thu, 16 Nov 2017 12:00:00 UTC;"; //for cookies
+$excludedContent = ""; //html content for excluded view
 
 //The Main of the script
 $('document').ready(function() {
@@ -21,7 +24,7 @@ $('document').ready(function() {
         else{
 			//remove the restaurant in the view and add it to the skipped list
 			$skippedList.push($jsonobject.businesses.splice($pos, 1)[0]);
-			console.log($skippedList);
+			//console.log($skippedList);
 			//TODO: 
 			//when restaurants list is empty, query API again
 			//with original length as offset. &offset=LENGTH or something like that.
@@ -85,6 +88,52 @@ $('document').ready(function() {
 		$skippedList = [];
 		$("#skipped").html("");
 	});
+	
+	loadExcludeList(); // load ids from cookie
+	
+	// adds a restaurant to exclude list, updates cookie, and updates result view
+	$("#exclude").click(function(e) {
+		e.preventDefault();
+		var exclude = $jsonobject.businesses.splice($pos, 1)[0]; //remove from results
+		$excludeList.push(exclude.id); //save id
+		addExcludeCookie(exclude.id);
+		updateRestaurant($jsonobject); //update result
+	});
+	
+	// Event handler for exclude list link
+	$("#viewexcluded").click(function(e){
+		e.preventDefault();
+		if($excludeList.length > 0) {
+			$excludedContent = ""; //clear html
+			for(var i = 0; i < $excludeList.length; i++) {
+				businessSearchCaller($excludeList[i]);
+			}
+		}
+	});
+	
+	// Trigger event handler that will fire when business search caller finishes
+	// Generates and updates HTMl content of exclude view when given business JSON object (data)
+    $(document).on('loadExcludedContent', function(event, data){
+		$excludedContent+= "<h3 class='" + data.id + "'>" + data.name + "</h3>";
+		$excludedContent+= "<img class='img-thumbnail " + data.id + "' src='" + data.image_url + "'>";
+		$excludedContent+= "<a href='#' id='" + data.id + "' class='text-muted  col-md-12 remove-exclude " + 
+			data.id + "'>Remove from exclude list</a></br></br>";
+		$excludedContent+= "<hr class='" + data.id + "'>";
+		$("#excluded").html($excludedContent);
+    });
+	
+	// Event handler for when the user clicks "remove from exclude list" link
+	// Removes from exclude view and updates cookie
+	$(document).on('click', '.remove-exclude', function(e) {
+		e.preventDefault();
+		var business_id = $(this).attr('id'); //get business id from element
+		$("." + business_id).remove(); //remove from view
+		var index = $.inArray(business_id, $excludeList); //position in arr
+		if(index != -1) {
+			$excludeList.splice(index, 1); //remove from internal list
+			removeExcludeCookie(business_id); //update cookie
+		}
+	});
 });
 
 /**  
@@ -114,51 +163,62 @@ function apiCaller($location, callback){
 function updateRestaurant(jsonobj){
     $restaurants = jsonobj.businesses;
     
-    $pos = Math.floor(Math.random() * $restaurants.length);  //chooses random index
-    console.log("Pos: "+$pos);
-    
-    console.log($restaurants[$pos]);
+    $repeat = true;
+    do {
+       $pos = Math.floor(Math.random() * $restaurants.length);  //chooses random index
+       console.log("Pos: "+$pos);
+       console.log($restaurants[$pos]);
 
-    $RESTAURANT_OBJ = $restaurants[$pos];
-    $image = $RESTAURANT_OBJ.image_url;
-    $name = $RESTAURANT_OBJ.name;
-    $phone = $RESTAURANT_OBJ.phone;
-    $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
-    $addressObject = $RESTAURANT_OBJ.location.address;
-    $city = $RESTAURANT_OBJ.location.city;
-    $rating = $RESTAURANT_OBJ.rating_img_url_large;
-    $categories = $RESTAURANT_OBJ.categories;
-    $url = $RESTAURANT_OBJ.url;
+       //console.log("length: " + $restaurants.length);
+       $RESTAURANT_OBJ = $restaurants[$pos];
+       
+       $id = $RESTAURANT_OBJ.id;
+         
+       if($.inArray($id, $excludeList) == -1) { //checks if result is in excludeList
+          $image = $RESTAURANT_OBJ.image_url;
+          $name = $RESTAURANT_OBJ.name;
+          $phone = $RESTAURANT_OBJ.phone;
+          $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
+          $addressObject = $RESTAURANT_OBJ.location.address;
+          $city = $RESTAURANT_OBJ.location.city;
+          $rating = $RESTAURANT_OBJ.rating_img_url_large;
+          $categories = $RESTAURANT_OBJ.categories;
+          $url = $RESTAURANT_OBJ.url;
 
-	$streetAddress = "";
+         $streetAddress = "";
 
-	for (var i = 0; i < $addressObject.length; i++) {
-   		$streetAddress += $addressObject[i] +"\n";
-	}
-    $streetAddress += $city;
-    $categories_content = $categories[0][0] ;
-    if($categories.length > 1){
-        $categories_content += ", "+$categories[1][0];
-    }
-    
-    $("#name").html($name);
-    $("#image").attr('src',$image);
-    $("#rating").attr('src', $rating);
-    $("#img-link").attr('href', $url);
-    $("#see-more").attr('href', $url);
-    $("#address").text($streetAddress);
-    $("#phone").text($phone);
-    $("#category").text($categories_content);
-    
-    
-    //Collapses The Output Div
-    $("#output").collapse("toggle");
-    $("#output").removeAttr("id");
-    
-    //replaces Search Button to Disco Again
-    $("#search").text("Disco Again");
-    
-    
+         for (var i = 0; i < $addressObject.length; i++) {
+               $streetAddress += $addressObject[i] +"\n";
+         }
+          $streetAddress += $city;
+          $categories_content = $categories[0][0] ;
+          if($categories.length > 1){
+              $categories_content += ", "+$categories[1][0];
+          }
+          
+          $("#name").html($name);
+          $("#image").attr('src',$image);
+          $("#rating").attr('src', $rating);
+          $("#img-link").attr('href', $url);
+          $("#see-more").attr('href', $url);
+          $("#address").text($streetAddress);
+          $("#phone").text($phone);
+          $("#category").text($categories_content);
+          
+          
+          //Collapses The Output Div
+          $("#output").collapse("toggle");
+          $("#output").removeAttr("id");
+          
+          //replaces Search Button to Disco Again
+          $("#search").text("Disco Again");
+          $repeat = false;
+       }
+       else {
+          //console.log($pos + " result was in exclude list");
+          $jsonobject.businesses.splice($pos, 1)[0]; //removes restaurant from results
+       }
+    } while ($repeat == true && $restaurants.length > 0);
 }
 
 // A function that simply updates the restaurant view taking in a restaurant object as a param
@@ -227,13 +287,16 @@ function reverseGeocodingCaller(lat, lng, autofillCallback){
 		url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat +"," + lng + 
 		"&key=" + $GEOCODING_KEY,
 		dataType : "json",
-		success:function(result){
+		success:function(result) {
 			var locJSON = JSON.stringify(result, null, 4);
+			//console.log(locJSON);
+         //   console.log($currentLat + ", " + $currentLong);
 			var locObj = JSON.parse(locJSON);
-			var city = locObj.results[0].address_components[2].long_name;
-			var state = locObj.results[0].address_components[4].short_name;
-			var country = locObj.results[0].address_components[5].short_name;
-			var locStr = city + ", " + state + ", " + country;
+//			var city = locObj.results[0].address_components[2].long_name;
+//			var state = locObj.results[0].address_components[4].short_name;
+//			var country = locObj.results[0].address_components[5].short_name;
+//			var locStr = city + ", " + state + ", " + country;
+			var locStr = locObj.results[1].formatted_address;
           
             var coordinates = "ll="+lat+","+lng;
 			autofillCallback(locStr, lat, lng);
@@ -273,32 +336,53 @@ function initMap() {
 
 		marker = new google.maps.Marker({
 			position: pointA,
-			title: "point A",
-			label: "A",
-			map: map
+			title: "Your Location",
+			map: map,
+			animation: google.maps.Animation.DROP
 		});
 
 
 		restMarker = new google.maps.Marker({
 			position: pointB,
-			title: "point B",
+			title: $RESTAURANT_OBJ.name,
 			map: map,
-			icon: "../img/foodiscomarker.png"
+			icon: "../img/foodiscomarker.png",
+			animation: google.maps.Animation.DROP
 		});
 
 
 		directionsService = new google.maps.DirectionsService,
 		directionsDisplay = new google.maps.DirectionsRenderer({
 			suppressMarkers: true,
-		  map: map
+		    map: map
 		}),   
 
 		google.maps.event.addListenerOnce(map, 'idle', function() {
 			google.maps.event.trigger(map, 'resize');
 			map.setCenter(pointA);
-		});  
+		});
+    
+          //Marker info window to display information on mrker
+//        var markerInfoWindow = new google.maps.InfoWindow({
+//            content: "You"
+//        });
+//        google.maps.event.addListener(marker, "click", function(e) {
+//            markerInfoWindow.open(map, this);
+//        });
+//        
+//        var restInfoWindow = new google.maps.InfoWindow({
+//            content: $RESTAURANT_OBJ.name
+//        });
+//        google.maps.event.addListener(restMarker, "click", function(e) {
+//            restInfoWindow.open(map, this);
+//        });
 
 		calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
+	
+		// include directions
+		directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById('right-panel'));
+    
 
 }
 
@@ -316,4 +400,73 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, 
 			}
 		}
 	);
+}
+
+/* Adds a restaurant id to the excluded cookie. */
+function addExcludeCookie(id) {
+	var newCookie = "";
+	var existingCookies = document.cookie; //existing cookies
+	if (existingCookies.length == 0) { //new cookie is first cookie
+		newCookie = "excluded=" + id + ";";
+	}
+	else { //adding to existing cookies
+		newCookie = existingCookies + " " + id + ";";
+	}
+	document.cookie = newCookie + $expireStr + "path=/";
+}
+
+/* Removes a restaurant id from the excluded cookie, 
+   by placing the ids in an array, making the given id an empty
+   string, and re-saving the cookie.
+ */
+function removeExcludeCookie(id) {
+	var exclude = document.cookie.split(';'); //exclude list (as one string)
+	var excludeArr = exclude[0].split(' '); //split list into array
+	excludeArr[0] = excludeArr[0].substring(9, excludeArr[0].length); //remove "excluded=" from first id
+	//find and un-exclude restaurant
+	for(var i = 0; i < excludeArr.length; i++) {
+        if(excludeArr[i] === id) {
+			excludeArr[i] = ""; //delete cookie
+		}
+    }
+	var newCookie = "excluded=";
+	for(var i = 0; i <excludeArr.length; i++) { //reconstruct cookie
+        newCookie += " " + excludeArr[i];
+    }
+	newCookie += "; path=/;" + $expireStr;
+	document.cookie = newCookie; //re-save excluded cookie
+}
+
+/* Loads restaurant ids from the excluded cookie and adds them to $excludeList */
+function loadExcludeList() {
+	var exclude = document.cookie;
+	if (exclude.length != 0) {
+		exclude = exclude.split(';'); //exclude list as one long string
+		var excludeArr = exclude[0].split(' '); //split ids
+		for(var i = 0; i < excludeArr.length; i++) {
+			$excludeList.push(excludeArr[i]);
+		}
+		$excludeList[0] = $excludeList[0].substring(9, $excludeList[0].length); //remove "excluded=" in first id
+	}
+}
+
+/* Calls Yelp Business API with restaurant id, then calls another
+   function to generate the HTML content in the excluded list */
+function businessSearchCaller($id ) {
+	$.ajax({
+        type: 'GET',
+        url: "scripts/businessSearch.php",
+        dataType : "json",
+		
+        // data that is processed by the php (arguments)
+        data: {business_id:$id
+			  },
+        
+        success:function(result){
+			$(document).triggerHandler('loadExcludedContent', [result]); //call html generator
+        },
+        error:function(){
+            console.log("Failed to load php");
+        }
+    });
 }

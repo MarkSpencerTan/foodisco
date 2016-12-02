@@ -96,6 +96,10 @@ a.btn{
 	height: 400px;
 }
 
+.adp-directions{
+	width: 100%;
+}
+
 
 #image{
     border-radius:8px;
@@ -137,8 +141,8 @@ a:hover{
     text-decoration: none;
 }
 
-/*Skipped List Modal*/
-#skipped{
+/*Skipped List Modal, excluded list modal */
+#skipped, #excluded {
 	text-align: center;
 }
 
@@ -185,6 +189,10 @@ button#gps, button#filter{
   }
 }
 
+/* Text in about modal */
+#about_description {
+	margin: 10px;
+}
 /*css for smaller screen like tablet*/
 @media screen and (max-width:991px){
     #image{

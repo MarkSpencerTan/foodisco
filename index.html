@@ -33,8 +33,9 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
+            <li role="presentation" data-toggle="modal" data-target="#about_modal"><a href="#">About</a></li>
+            <li role="presentation"><a href="userguide.html">User Manual</a></li>
+						<li role="presentation"><a href="devguide.html">Dev Guide</a></li>
           </ul>
         </nav>
         <h3 id="brand" class="text-muted">Space Monkey Inc.</h3>
@@ -68,8 +69,8 @@
           
           <!-- Nav tabs -->
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a id="description-tab" href="#description" aria-controls="home" role="tab" data-toggle="tab">Restaurant</a></li>
-            <li role="presentation"><a href="#map" onclick="initMap()"aria-controls="profile" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation" class="active"><a id="description-tab" href="#description" aria-controls="home" role="tab" data-toggle="tab">Restaurant Description</a></li>
+            <li role="presentation"><a href="#map-tab" onclick="initMap()"aria-controls="profile" role="tab" data-toggle="tab">Directions</a></li>
           </ul>
 
           <!-- Tab panes -->
@@ -86,11 +87,14 @@
                       <h4 id="phone">562-800-8888</h4>
                       <h4 id="address">1234 Street Ave. <br>Long Beach, CA</h4>
                       <a href=""  target="_blank" id="see-more"><h4 >See More on <img src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/95212dafe621/assets/img/yelp-2c.png" height="40" width="70"></h4></a>
+					  <a id="exclude" class="text-muted" href="#description">Don't show me this restaurant again</a>  
                   </div>
               </div>  
             </div>
-            <div role="tabpanel" class="tab-pane" id="map">
-              </div>
+            <div role="tabpanel" class="tab-pane" id="map-tab">
+				<div id="map" class="col-md-12"></div>
+				<div id="right-panel" class="col-md-12" style="height:400px;"></div>  
+			</div>
 
           </div>
           
@@ -102,10 +106,13 @@
         <p><a id="search" class="btn btn-lg btn-danger" href="#" role="button">Search</a></p>
           
         <!--View Skipped List Modal Link  -->
-        <a id="viewskipped" class="text-muted" data-toggle="modal" data-target="#skipped_modal" href="#">View Skipped List</a>  
+        <a id="viewskipped" class="text-muted" data-toggle="modal" data-target="#skipped_modal" href="#">View skipped list</a>  
+		  <br>
+	  	<!--View excluded list modal link  -->
+		<a id="viewexcluded" class="text-muted" data-toggle="modal" data-target="#excluded_modal" href="#">View excluded list</a>
       </div>
         
-      <!-- Modal -->
+      <!-- Skipped modal -->
       <div class="modal fade" id="skipped_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
        <div class="modal-dialog modal-sm" role="document">
          <div class="modal-content">
@@ -126,7 +133,47 @@
        </div>
       </div>
       
+	<!-- Excluded modal -->
+	<div class="modal fade" id="excluded_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-sm" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+             <h4 class="modal-title" id="myModalLabel">Excluded Restaurants</h4>
+           </div>
+           <div id="excluded" class="modal-body">
+             <p>No excluded restaurants</p>
+           </div>
+           <div class="modal-footer">
+			 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+      </div>
 
+	  <!-- About modal -->
+      <div class="modal fade" id="about_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-sm" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+             <h4 class="modal-title" id="myModalLabel">About</h4>
+           </div>
+           <p id="about_description">
+              Foodisco helps you decide where to eat.<br><br>
+              Stop spending hours looking at different restaurants; just visit Foodisco and find your next destination right away!<br><br>
+              Built by Space Monkey.
+           </p>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+      </div>
       <footer class="footer">
         <p>&copy; 2016 Space Monkey.<img id="yelpicon" src="https://s3-media2.fl.yelpcdn.com/assets/srv0/developer_pages/ad84e7a1a8bc/assets/img/logo-white.png" height="40" width="70"/></p>
         
