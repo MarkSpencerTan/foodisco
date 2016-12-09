@@ -1,5 +1,6 @@
 
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -14,9 +15,205 @@
 
     <!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<style>
+	
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #333;
+}
 
-    <!-- Custom styles for this template -->
-    <link href="css/userguide.css" rel="stylesheet">
+
+/*
+ * Override Bootstrap's default container.
+ */
+
+@media (min-width: 1200px) {
+  .container {
+    width: 970px;
+  }
+}
+
+
+/*
+ * Masthead for nav
+ */
+
+.blog-masthead {
+  background-color: #428bca;
+  -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
+          box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
+}
+
+/* Nav links */
+.blog-nav-item {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  font-weight: 500;
+  color: #cdddeb;
+}
+.blog-nav-item:hover,
+.blog-nav-item:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Active state gets a caret at the bottom */
+.blog-nav .active {
+  color: #fff;
+}
+.blog-nav .active:after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -5px;
+  vertical-align: middle;
+  content: " ";
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid;
+  border-left: 5px solid transparent;
+}
+
+
+/*
+ * Blog name and description
+ */
+
+.blog-header {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.blog-title {
+  margin-top: 30px;
+  margin-bottom: 0;
+  font-size: 60px;
+  font-weight: normal;
+}
+.blog-description {
+  font-size: 20px;
+  color: #999;
+}
+
+
+/*
+ * Main column and sidebar layout
+ */
+
+.blog-main {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Sidebar modules for boxing content */
+.sidebar-module {
+  padding: 15px;
+  margin: 0 -15px 15px;
+}
+.sidebar-module-inset {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+.sidebar-module-inset p:last-child,
+.sidebar-module-inset ul:last-child,
+.sidebar-module-inset ol:last-child {
+  margin-bottom: 0;
+}
+
+
+/* Pagination */
+.pager {
+  margin-bottom: 60px;
+  text-align: left;
+}
+.pager > li > a {
+  width: 140px;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 30px;
+}
+
+
+/*
+ * Blog posts
+ */
+
+.blog-post {
+  padding-top: 60px;
+}
+.blog-post-title {
+  margin-bottom: 5px;
+  font-size: 40px;
+}
+.blog-post-meta {
+  margin-bottom: 20px;
+  color: #999;
+}
+
+
+/*
+ * Footer
+ */
+
+.blog-footer {
+  padding: 40px 0;
+  color: #999;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e5e5e5;
+}
+.blog-footer p:last-child {
+  margin-bottom: 0;
+}
+
+/*Custom Css*/
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: white !important;
+    background-color: #e8002e !important;
+}
+
+#banner{
+	height: 200px;
+	color: white;
+	background-color: #e8002e;
+	margin-bottom: 60px;
+	margin-top:50px;
+	padding-top:50px;
+	text-align: center;
+	font-size: 50px;
+}
+
+.banner-muted{
+	color:pink !important;
+}
+
+.navbar-default {
+    border: none !important;
+}
+ol a:hover {
+    text-decoration: none;
+		border-left-style: solid;
+		border-left-width: thin;
+		padding-left: 8px;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+</style>
+		
+		
   </head>
 
   <body>
@@ -31,7 +228,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">
-						<img alt="Brand" height="30" src="img/foodisco_icon.png" style="border-radius:5px; margin-top:-5px;">
+						<img alt="Brand" height="30" src="http://foodisco.marktan.us/img/foodisco_icon.png" style="border-radius:5px; margin-top:-5px;">
 					</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
@@ -56,13 +253,12 @@
 
         <div class="col-sm-8 blog-main">
 
-          <div class="blog-post" id="about">
+          <div class="blog-post" id="about"  style="padding-top:0px;">
             <h2 class="blog-post-title">About</h2>
             <p class="blog-post-meta">What is foodisco?</p>
 
-            <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
-            <hr>
-            <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
+            <p>Foodisco is the best way to find new restaurants near you. Gone are the days of indecisive friend groups taking hours to decide where to eat. <br>
+							Use Foodisco to find some of the best restaurants in your area.</p>
             
           </div><!-- /.blog-post -->
 
@@ -70,25 +266,32 @@
             <h2 class="blog-post-title">Features</h2>
             <p class="blog-post-meta">What it can do</p>
 
-            <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
-            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-            <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            <ul>
+							<li>Automatically fills in your location, no need to type it in.</li>
+							<li>Finds the best restaurants near you.</li>
+							<li>Easily get directions to a restaurant.</li>
+							<li>Dislike a restaurant? Easily prevent that listing from showing up again.</li>
+						</ul>
           </div><!-- /.blog-post -->
 
           <div class="blog-post" id="getstarted">
-						<h2 class="blog-post-title">Get Started</h2>
+						<h2 class="blog-post-title" style="margin-bottom:40px;">Get Started</h2>
 
-            <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-            <p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p>
+						<h3>Step 1 | <span class="text-muted">Enter your Location</span></h3>
+						<p>To enter a location, either:</p>
+						<ul>
+							<li>Type your location in the search box</li>
+							<li>Click the icon to the right of the search box</li>
+						</ul>
+						<img src="http://foodisco.marktan.us/img/screenshots/enter_location.png" width="600" style="margin-bottom:80px;">
+						
+						<h3>Step 2 | <span class="text-muted">Click on search</span></h3>
+						<img src="http://foodisco.marktan.us/img/screenshots/click_search.png" width="600" style="margin-bottom:20px;">
+						
+						<h3>Step 3 | <span class="text-muted">Get a Result</span></h3>
+						<img src="http://foodisco.marktan.us/img/screenshots/view_result.png" width="600" style="margin-bottom:20px;">
+
           </div><!-- /.blog-post -->
-
-          <nav>
-            <ul class="pager">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">Next</a></li>
-            </ul>
-          </nav>
 
         </div><!-- /.blog-main -->
 

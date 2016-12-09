@@ -113,14 +113,14 @@ $('document').ready(function() {
 	
 	// Trigger event handler that will fire when business search caller finishes
 	// Generates and updates HTMl content of exclude view when given business JSON object (data)
-    $(document).on('loadExcludedContent', function(event, data){
+	$(document).on('loadExcludedContent', function(event, data){
 		$excludedContent+= "<h3 class='" + data.id + "'>" + data.name + "</h3>";
 		$excludedContent+= "<img class='img-thumbnail " + data.id + "' src='" + data.image_url + "'>";
 		$excludedContent+= "<a href='#' id='" + data.id + "' class='text-muted  col-md-12 remove-exclude " + 
 			data.id + "'>Remove from exclude list</a></br></br>";
 		$excludedContent+= "<hr class='" + data.id + "'>";
 		$("#excluded").html($excludedContent);
-    });
+	});
 	
 	// Event handler for when the user clicks "remove from exclude list" link
 	// Removes from exclude view and updates cookie
@@ -175,7 +175,7 @@ function updateRestaurant(jsonobj){
        $id = $RESTAURANT_OBJ.id;
          
        if($.inArray($id, $excludeList) == -1) { //checks if result is in excludeList
-          $image = $RESTAURANT_OBJ.image_url;
+          $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("ms.jpg$"), "ls.jpg");	// changes small image to large
           $name = $RESTAURANT_OBJ.name;
           $phone = $RESTAURANT_OBJ.phone;
           $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
@@ -224,7 +224,7 @@ function updateRestaurant(jsonobj){
 // A function that simply updates the restaurant view taking in a restaurant object as a param
 function simpleUpdate(restaurantObj){
 	$RESTAURANT_OBJ = restaurantObj;
-    $image = $RESTAURANT_OBJ.image_url;
+    $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("ms.jpg$"), "ls.jpg");	// changes small image to large
     $name = $RESTAURANT_OBJ.name;
     $phone = $RESTAURANT_OBJ.phone;
     $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);

@@ -109,6 +109,7 @@ a.btn{
 #restaurant-desc{
     text-align: left;
     color:black;
+		padding-top: 20px;
 }
 
 /*Change glow of input to red*/
