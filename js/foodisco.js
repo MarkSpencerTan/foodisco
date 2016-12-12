@@ -381,13 +381,15 @@ function initMap() {
 	
 		// include directions
 		directionsDisplay.setMap(map);
+		// this will clear the old directions panel first to prevent directions overflowing.
 		document.getElementById('right-panel').innerHTML = '';
+		// display directions
     directionsDisplay.setPanel(document.getElementById('right-panel'));
 	
-	// Resizes panel height dynamically depending on map content
-	$panelsize = $('#map').height() + $('#right-panel').height();
-	console.log("Map height: "+$panelsize);
-	$('#map-tab').height($panelsize);
+		// Resizes panel height dynamically depending on map content
+		$panelsize = $('#map').height() + $('#right-panel').height();
+		console.log("Map height: "+$panelsize);
+		$('#map-tab').height($panelsize);
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
