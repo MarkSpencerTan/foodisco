@@ -289,14 +289,9 @@ function reverseGeocodingCaller(lat, lng, autofillCallback){
 		dataType : "json",
 		success:function(result) {
 			var locJSON = JSON.stringify(result, null, 4);
-			//console.log(locJSON);
-         //   console.log($currentLat + ", " + $currentLong);
 			var locObj = JSON.parse(locJSON);
-//			var city = locObj.results[0].address_components[2].long_name;
-//			var state = locObj.results[0].address_components[4].short_name;
-//			var country = locObj.results[0].address_components[5].short_name;
-//			var locStr = city + ", " + state + ", " + country;
-			var locStr = locObj.results[1].formatted_address;
+			// Gets the formatted address of the geocode from the json result
+			var locStr = locObj.results[0].formatted_address;
           
             var coordinates = "ll="+lat+","+lng;
 			autofillCallback(locStr, lat, lng);
