@@ -381,9 +381,13 @@ function initMap() {
 	
 		// include directions
 		directionsDisplay.setMap(map);
-        directionsDisplay.setPanel(document.getElementById('right-panel'));
-    
-
+		document.getElementById('right-panel').innerHTML = '';
+    directionsDisplay.setPanel(document.getElementById('right-panel'));
+	
+	// Resizes panel height dynamically depending on map content
+	$panelsize = $('#map').height() + $('#right-panel').height();
+	console.log("Map height: "+$panelsize);
+	$('#map-tab').height($panelsize);
 }
 
 function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB) {
