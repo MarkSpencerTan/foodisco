@@ -15,7 +15,24 @@ $('document').ready(function() {
     $('#search').click(function(e) {
         e.preventDefault();
         $loc = $('#location').val();    //takes location bar's userinput
-        
+        if($loc=="") {
+            geolocationCaller(function($loc, lat, long){
+                $("#location").val($loc);
+                $currentLong = long;
+                $currentLat = lat;
+            });
+        }
+        else {
+            var geocoder = new google.maps.Geocoder();
+            
+            geocoder.geocode( {'address':$loc}, function(results, status) {
+                             
+                if(status == google.maps.GeocoderStatus.OK) {
+                    $currentLat = results[0].geometry.location.lat();
+                    $currentLong = results[0].geometry.location.lng();
+                }
+            });
+        }
         //if the value on the var is not the same as the previous saved location
         //call the api for a new restaurant
     	if($loc != $savedlocation) {
@@ -62,8 +79,10 @@ $('document').ready(function() {
 	$("#viewskipped").click(function(e){
 		$skippedContent = "";
 		for(var i=0; i<$skippedList.length; i++){
+			$skipped_image = $skippedList[i].image_url.replace(new RegExp("o.jpg$"), "ms.jpg");	// changes small image to large
+		  console.log("FUCKIN URL SMALL: " + $image);
 			$skippedContent+= "<a href='" + i + "'><h3>" + $skippedList[i].name + "</h3></a>";
-			$skippedContent+= "<img class='img-thumbnail' src='" + $skippedList[i].image_url + "'>";
+			$skippedContent+= "<img class='img-thumbnail' src='" + $skipped_image + "'>";
 			$skippedContent+= "<hr>"
 		}
 		$("#skipped").html($skippedContent);
@@ -143,7 +162,7 @@ $('document').ready(function() {
 function apiCaller($location, callback){
     $.ajax({
         type: 'GET',
-        url: "scripts/sample.php",
+        url: "scripts/fusionscript.php",
         dataType : "json",
         // data that is processed by the php (arguments)
         data: {location:$location
@@ -175,25 +194,26 @@ function updateRestaurant(jsonobj){
        $id = $RESTAURANT_OBJ.id;
          
        if($.inArray($id, $excludeList) == -1) { //checks if result is in excludeList
-          $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("ms.jpg$"), "ls.jpg");	// changes small image to large
+          $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("o.jpg$"), "ls.jpg");	// changes small image to large
           $name = $RESTAURANT_OBJ.name;
-          $phone = $RESTAURANT_OBJ.phone;
-          $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
-          $addressObject = $RESTAURANT_OBJ.location.address;
+          $phone = $RESTAURANT_OBJ.display_phone;
+          $addressObject = $RESTAURANT_OBJ.location.display_address;
           $city = $RESTAURANT_OBJ.location.city;
-          $rating = $RESTAURANT_OBJ.rating_img_url_large;
+				  $rating = "img/rating/" + $RESTAURANT_OBJ.rating + ".png";
+				 	$review_count = $RESTAURANT_OBJ.review_count + " Reviews";
           $categories = $RESTAURANT_OBJ.categories;
+				  
+				  $price = "Price: <span id='price_green'>" + $RESTAURANT_OBJ.price +"</span><span id=price_gray>";
+					for(var i = 0; i < (4-$RESTAURANT_OBJ.price.length); i++){
+						$price += "$";
+					}
+					$price += "</span>";
+				
           $url = $RESTAURANT_OBJ.url;
 
-         $streetAddress = "";
-
-         for (var i = 0; i < $addressObject.length; i++) {
-               $streetAddress += $addressObject[i] +"\n";
-         }
-          $streetAddress += $city;
-          $categories_content = $categories[0][0] ;
-          if($categories.length > 1){
-              $categories_content += ", "+$categories[1][0];
+          $categories_content = $categories[0].title;
+          for(var i = 1; i < $categories.length; i++){
+          	$categories_content += ", "+$categories[i].title;
           }
           
           $("#name").html($name);
@@ -201,9 +221,11 @@ function updateRestaurant(jsonobj){
           $("#rating").attr('src', $rating);
           $("#img-link").attr('href', $url);
           $("#see-more").attr('href', $url);
-          $("#address").text($streetAddress);
+          $("#address").text($addressObject);
           $("#phone").text($phone);
           $("#category").text($categories_content);
+		  $("#p$posrice").html($price);
+		  $("#review_count").text($review_count);
           
           
           //Collapses The Output Div
@@ -224,35 +246,40 @@ function updateRestaurant(jsonobj){
 // A function that simply updates the restaurant view taking in a restaurant object as a param
 function simpleUpdate(restaurantObj){
 	$RESTAURANT_OBJ = restaurantObj;
-    $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("ms.jpg$"), "ls.jpg");	// changes small image to large
+    $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("o.jpg$"), "ls.jpg");	// changes small image to large
+		console.log("FUCKIN URL: " + $image);
     $name = $RESTAURANT_OBJ.name;
-    $phone = $RESTAURANT_OBJ.phone;
-    $phone = "("+$phone.substr(0,3)+") "+$phone.substr(3,3) + "-"+ $phone.substr(6);
-    $addressObject = $RESTAURANT_OBJ.location.address;
-    $city = $RESTAURANT_OBJ.location.city;
-    $rating = $RESTAURANT_OBJ.rating_img_url_large;
+    $phone = $RESTAURANT_OBJ.display_phone;
+    $addressObject = $RESTAURANT_OBJ.location.display_address;
+    $rating = "img/rating/" + $RESTAURANT_OBJ.rating + ".png";
+		$review_count = $RESTAURANT_OBJ.review_count + " Reviews";
     $categories = $RESTAURANT_OBJ.categories;
+	
+	  $price = "Price: <span id='price_green'>" + $RESTAURANT_OBJ.price +"</span><span id=price_gray>";
+		for(var i = 0; i < (4-$RESTAURANT_OBJ.price.length); i++){
+			$price += "$";
+		}
+		$price += "</span>";
+		
     $url = $RESTAURANT_OBJ.url;
-
-	$streetAddress = "";
-
-	for (var i = 0; i < $addressObject.length; i++) {
-   		$streetAddress += $addressObject[i] +"\n";
+    
+    console.log("Simple Update URL: " + $url);
+    
+    $categories_content = $categories[0].title;
+	for(var i = 1; i < $categories.length; i++){
+		$categories_content += ", "+$categories[i].title;
 	}
-    $streetAddress += $city;
-    $categories_content = $categories[0][0] ;
-    if($categories.length > 1){
-        $categories_content += ", "+$categories[1][0];
-    }
     
     $("#name").html($name);
     $("#image").attr('src',$image);
     $("#rating").attr('src', $rating);
     $("#img-link").attr('href', $url);
     $("#see-more").attr('href', $url);
-    $("#address").text($streetAddress);
+    $("#address").text($addressObject);
     $("#phone").text($phone);
     $("#category").text($categories_content);
+	  $("#price").html($price);
+		$("#review_count").text($review_count);
 }
 
 
@@ -323,8 +350,8 @@ function initMap() {
 		var marker;
 		var latlng = {lat: $currentLat, lng: $currentLong};   
 		var restMarker;
-		var restLat = $RESTAURANT_OBJ.location.coordinate.latitude;
-		var restLng = $RESTAURANT_OBJ.location.coordinate.longitude;
+		var restLat = $RESTAURANT_OBJ.coordinates.latitude;
+		var restLng = $RESTAURANT_OBJ.coordinates.longitude;
 		var pointA = new google.maps.LatLng($currentLat, $currentLong);
 		var pointB = new google.maps.LatLng(restLat, restLng);
 

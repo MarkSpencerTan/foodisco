@@ -1,6 +1,5 @@
 /* Space out content a bit */
 body {
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 
@@ -58,8 +57,8 @@ body {
     background-color:white;
     padding-left:0px;
     padding-right:0px;
-    padding-top:60px;
     padding-bottom: 40px;
+    padding-top: 200px;
 }
 
 .nav-pills>li.active>a{
@@ -68,6 +67,39 @@ body {
 
 .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus{
     background-color:#d9001d;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: white;
+    background-color: #e8002e;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    color: white;
+    background-color: #e8002e;
+}
+
+
+.navbar .nav > li > a , #favorite, #heart {
+    -webkit-transition: all ease .3s;
+       -moz-transition: all ease .3s;
+         -o-transition: all ease .3s;
+            transition: all ease .3s;
+}
+
+.navbar .nav > li > a:hover {
+    background-color: #e8002e;
+    color: #fff;
+}
+
+/*Resizes navbar*/
+.navbar-nav > li > a, .navbar-brand {
+    height: 40px;
+    padding-top:10px;
+}
+.navbar {
+    min-height:40px;
+    line-height: 0px;
 }
 
 a.btn{
@@ -85,7 +117,8 @@ a.btn{
     margin-left: 15px;
     margin-right: 15px;
     background-color: white;
-    padding:20px;
+    padding:30px;
+    padding-bottom: 60px;
     color:#d9001d;
     -webkit-box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
     -moz-box-shadow: inset -1px -1px 54px -2px rgba(240,240,240,1);
@@ -104,6 +137,24 @@ a.btn{
 #image{
     border-radius:8px;
     float:right;
+	  margin-top: 20px;
+}
+
+#rating {
+    height: 30px;
+}
+
+#review_count{
+	margin:10px;
+}
+
+#price_green{
+	color:darkgreen;
+	font-weight: bold;
+}
+
+#price_gray{
+	color:darkgray;
 }
 
 #restaurant-desc{
@@ -119,7 +170,6 @@ a.btn{
 }
 li a:focus {
     outline: .1px solid #e8002e;
-    border-radius: 5px;
 }
 
 a{color:black;}
@@ -136,6 +186,31 @@ a{color:black;}
 
 #see-more img{
     margin-top: -7px;
+}
+
+#favorite{
+    font-size:14px;
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-bottom:10px;
+
+}
+
+#heart{
+    padding-top:2px;
+    margin-left:3px;
+    color:#e8002e;
+    float:none !important;
+}
+
+#favorite:hover{
+    color:white;
+    background-color:#e8002e;
+}
+
+#favorite:hover #heart{
+    color:white;
 }
 
 a:hover{
@@ -164,6 +239,27 @@ button#gps, button#filter{
   border-bottom-right-radius: 5px;
 }
 
+/* Text in about modal */
+#about_description {
+	margin: 30px;
+}
+
+#about_modal .modal-dialog.modal-sm {
+    width: 500px;
+}
+
+.close-modal {
+    -webkit-transition: all ease .3s;
+       -moz-transition: all ease .3s;
+         -o-transition: all ease .3s;
+            transition: all ease .3s;
+}
+
+.close-modal:hover {
+    background-color: #e8002e;
+    color: #fff;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
@@ -188,24 +284,26 @@ button#gps, button#filter{
     padding-right: 0px;
     padding-left: 0px;
   }
+  
+  /*to center nav li elements*/
+  .navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+  }
+  
+  .navbar .navbar-collapse {
+      text-align: center;
+      height: initial !important;
+  }
 }
 
-/* Text in about modal */
-#about_description {
-	margin: 10px;
-}
 /*css for smaller screen like tablet*/
-@media screen and (max-width:991px){
+@media screen and (max-width:700px) and (min-width:400px){
     #image{
         float:none;
     }
     #restaurant-desc{
         text-align: center;
-    }
-}
-@media screen and (max-width:768px){
-    #brand{
-        display: none;
     }
 }
 

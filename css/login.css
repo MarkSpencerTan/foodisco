@@ -1,0 +1,91 @@
+.open>.dropdown-menu {
+    display: block;
+    padding-bottom: 10px;
+    padding-top:10px;
+    width: 300px;
+}
+
+#login-dp{
+    min-width: 250px;
+    padding: 14px 14px 14px;
+    overflow:hidden;
+    background-color:rgba(255,255,255,.9);
+    line-height: 20px;
+}
+#login-dp .help-block{
+    font-size:12px    
+}
+#login-dp .bottom{
+    background-color:rgba(255,255,255,.9);
+    border-top:1px solid #ddd;
+    clear:both;
+    padding:14px;
+}
+
+#profile_dropdown{
+    line-height: 20px;
+}
+
+#login-dp .social-buttons{
+    margin:12px 0    
+}
+#login-dp .social-buttons a{
+    width: 49%;
+}
+#login-dp .form-group {
+    margin-bottom: 10px;
+}
+#sign-in, #sign-up, .red-btn{
+    background-color:#e8002e;
+    border:0px;
+}
+#sign-in:hover, #sign-up:hover, .red-btn:hover{
+    background-color:#d9001d;
+}
+
+#googlesignin, #fbsignin{
+    width: 49%;
+    background-color:white;
+    color:gray;
+    border: solid 1px darkgray;
+    text-align: left;
+}
+
+#googlesignin:hover, #fbsignin:hover{
+    background-color: #f9f9f9;
+}
+
+/*user account control*/
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.navbar-login .icon-size
+{
+    font-size: 87px;
+}
+
+#profile_thumb{
+    border-radius: 100px;
+}
+
+@media(max-width:768px){
+    #login-dp{
+        background-color: inherit;
+        color: #fff;
+    }
+    #login-dp .bottom{
+        background-color: inherit;
+        border-top:0 none;
+    }
+}
