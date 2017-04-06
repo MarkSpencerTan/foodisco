@@ -48,6 +48,9 @@ $('document').ready(function() {
 			updateRestaurant($jsonobject);
 		}
         $('#description-tab').tab('show');
+        
+        $("#favorite").removeClass("clickedFav");
+        $("#heart").removeClass("clickedHeart");
     });
 	
     // Enter key pressed on the location bar
@@ -80,7 +83,7 @@ $('document').ready(function() {
 		$skippedContent = "";
 		for(var i=0; i<$skippedList.length; i++){
 			$skipped_image = $skippedList[i].image_url.replace(new RegExp("o.jpg$"), "ms.jpg");	// changes small image to large
-		  console.log("FUCKIN URL SMALL: " + $image);
+		  //console.log("FUCKIN URL SMALL: " + $image);
 			$skippedContent+= "<a href='" + i + "'><h3>" + $skippedList[i].name + "</h3></a>";
 			$skippedContent+= "<img class='img-thumbnail' src='" + $skipped_image + "'>";
 			$skippedContent+= "<hr>"
@@ -224,8 +227,8 @@ function updateRestaurant(jsonobj){
           $("#address").text($addressObject);
           $("#phone").text($phone);
           $("#category").text($categories_content);
-		  $("#p$posrice").html($price);
-		  $("#review_count").text($review_count);
+				  $("#price").html($price);
+				  $("#review_count").text($review_count);
           
           
           //Collapses The Output Div
@@ -247,12 +250,12 @@ function updateRestaurant(jsonobj){
 function simpleUpdate(restaurantObj){
 	$RESTAURANT_OBJ = restaurantObj;
     $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("o.jpg$"), "ls.jpg");	// changes small image to large
-		console.log("FUCKIN URL: " + $image);
+    //console.log("FUCKIN URL: " + $image);
     $name = $RESTAURANT_OBJ.name;
     $phone = $RESTAURANT_OBJ.display_phone;
     $addressObject = $RESTAURANT_OBJ.location.display_address;
     $rating = "img/rating/" + $RESTAURANT_OBJ.rating + ".png";
-		$review_count = $RESTAURANT_OBJ.review_count + " Reviews";
+    $review_count = $RESTAURANT_OBJ.review_count + " Reviews";
     $categories = $RESTAURANT_OBJ.categories;
 	
 	  $price = "Price: <span id='price_green'>" + $RESTAURANT_OBJ.price +"</span><span id=price_gray>";

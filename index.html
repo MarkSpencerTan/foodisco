@@ -95,7 +95,7 @@
                       <div class="navbar-login">
                           <div class="row">
                               <div class="col-lg-4">
-                                  <img id="profile_pic" src="img/profile_thumb.png"/>
+                                  <img id="profile_pic" width="100" height="100" src="img/profile_thumb.png"/>
                               </div>
                               <div class="col-lg-8">
                                   <p class="text-left"><strong><span id="profile_name" >Haram Be</span></strong></p>
@@ -138,12 +138,38 @@
                 <button type="button" id="filter" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Filter&nbsp;<span class="caret"></span>
                 </button>
-                <div class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  <li><div role="separator" class="dropdown-divider"></div></li>
-                  <li><a class="dropdown-item" href="#">Separated link</a></li>
+                <div id="filter-dropdown" class="dropdown-menu pull-right">
+                  <form>
+                    <div class="form-group row">
+                      <label for="filter-radius" class="col-sm-2 col-form-label col-form-label-sm">Radius</label>
+                      <div class="col-sm-10">
+                        <input class="form-control" type="number" value="42" id="filter-radius">
+                      </div>
+                    </div>
+                    <div id="filter-rating">
+                      <label for="filter-radius" class="col-sm-2 col-form-label col-form-label-sm">Price</label>
+                      <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"> $
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"> $$
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3"> $$$
+                        </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3"> $$$$
+                        </label>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </span>
             </div>
@@ -164,7 +190,7 @@
               <div class="row">
                   <div id="img-col" class="col-md-6">
                       <a id="img-link"  target="_blank" href="https://www.yelp.com/biz/beachwood-brewing-and-bbq-long-beach?adjust_creative=um2sdJbDRG4wyZxruzTmhQ&utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=um2sdJbDRG4wyZxruzTmhQ">
-                        <img id="image" class="img-thumbnail" height=240 width=240 src=""/></a>
+                        <img id="image" class="img-thumbnail" height=240 width=240 src="img/default-rest-pic.jpg"/></a>
                   </div>
                   <div id="restaurant-desc" class="col-md-6">
                       <img id="rating" src="https://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png"/><span id="review_count" class="badge">0 reviews</span>

@@ -260,6 +260,21 @@ button#gps, button#filter{
     color: #fff;
 }
 
+/*css for filter*/
+div#filter-dropdown {
+    min-width: 400px;
+    max-width: 670px;
+    padding: 20px;
+    font-size: 8pt;
+    font-weight: normal;
+}
+
+.form-check.form-check-inline {
+    display: inline;
+    padding-left: 20px;
+}
+
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
