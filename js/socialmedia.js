@@ -6,14 +6,14 @@ function initApp() {
   // Listening for auth state changes.
   firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
-	  signedIn = true;
+	  $LOGGED_IN = true;
 	  $("#login_dropdown").hide();
       $("#profile_dropdown").show();
       updateProfile(user);
       $LOGGED_USER = user;
 	} else {
 	  // User is signed out.
-	  signedIn = false;
+	  $LOGGED_IN = false;
 	  $LOGGED_USER = null;
 	}
   });
@@ -40,6 +40,8 @@ $("#sign-out").click(function(e){
 	firebase.auth().signOut();
 	$("#profile_dropdown").hide();
 	$("#login_dropdown").show();
+	alert("you have been signed out.")
+	$LOGGED_IN = false;
 });
 
 $("#profile_dropdown").hide();
@@ -68,6 +70,7 @@ function signIn(socialmedia){
 
 			$("#profile_dropdown").show();
 			$("#login_dropdown").hide();
+			$LOGGED_IN = true;
 
 			console.log(user);
         }).catch(function(error) {
@@ -91,6 +94,7 @@ function signIn(socialmedia){
         // [START signout]
         firebase.auth().signOut();
 		alert("You have been signed out");
+		$LOGGED_IN = false;
 		$("#profile_dropdown").hide();
 		$("#login_dropdown").show();
 	}

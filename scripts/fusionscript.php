@@ -131,13 +131,17 @@ function request($bearer_token, $host, $path, $url_params = array()) {
  * @param    $location    The search location passed to the API 
  * @return   The JSON response from the request 
  */
-function search($bearer_token, $term, $location) {
+function search($bearer_token, $term, $location, $price, $radius, $categories, $sort) {
     $url_params = array();
     
     $url_params['term'] = $term;
     $url_params['location'] = $location;
     $url_params['limit'] = $GLOBALS['SEARCH_LIMIT'];
-		$url_params['open_now'] = true;
+	$url_params['open_now'] = true;
+    $url_params['price'] = $price;
+    $url_params['radius'] = $radius;
+    $url_params['categories'] = $categories;
+    $url_params['sort_by'] = $sort;
     
     return request($bearer_token, $GLOBALS['API_HOST'], $GLOBALS['SEARCH_PATH'], $url_params);
 }
@@ -159,7 +163,7 @@ function get_business($bearer_token, $business_id) {
  * @param    $term        The search term to query
  * @param    $location    The location of the business to query
  */
-function query_api($term, $location) {     
+function query_api($term, $location, $price, $radius, $categories, $sort) {     
     $bearer_token = obtain_bearer_token();
     // $response = json_decode(search($bearer_token, $term, $location));
     // $business_id = $response->businesses[0]->id;
@@ -176,7 +180,7 @@ function query_api($term, $location) {
     // $pretty_response = json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     // echo "$pretty_response\n";
 
-    $response = search($bearer_token, $term, $location);
+    $response = search($bearer_token, $term, $location, $price, $radius, $categories, $sort);
     echo $response;
 }
 /**
@@ -186,9 +190,19 @@ function query_api($term, $location) {
 //     "term::",
 //     "location::",
 // );
-    
-//$options = getopt("", $longopts);
+function debug_to_console( $data ) {
+    $output = $data;
+    if ( is_array( $output ) )
+        $output = implode( ',', $output);
+
+    echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
+}
+
 $term = "restaurants";
-$location = $_GET['location'];
-query_api($term, $location);
+$location= $_GET['location'];
+$price = $_GET['price'];
+$radius = $_GET['radius'];
+$categories = $_GET['categories'];
+$sort = $_GET['sort'];
+query_api($term, $location, $price, $radius, $categories, $sort);
 ?>

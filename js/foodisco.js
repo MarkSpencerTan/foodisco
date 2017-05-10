@@ -1,6 +1,8 @@
 $RESTAURANT_OBJ = null;
+$LOGGED_IN = false;
 $jsonobject = null;
 $savedlocation = "";
+$savedFilters = {};
 $skippedList = [];
 $currentLong = 100;
 $currentLat = -100;
@@ -10,18 +12,23 @@ $excludedContent = ""; //html content for excluded view
 
 //The Main of the script
 $('document').ready(function() {
-    
     // attach click event handler to search button
     $('#search').click(function(e) {
         e.preventDefault();
         $loc = $('#location').val();    //takes location bar's userinput
+        
         if($loc=="") {
-            geolocationCaller(function($loc, lat, long){
-                $("#location").val($loc);
-                $currentLong = long;
-                $currentLat = lat;
-            });
+        	geolocationCaller(function($loc, lat, long){
+				$("#location").val($loc);
+	            $currentLong = long;
+	            $currentLat = lat;
+	            apiCaller($loc);
+	            $('#description-tab').tab('show');
+		        $("#favorite").removeClass("clickedFav");
+		        $("#heart").removeClass("clickedHeart");
+			});
         }
+
         else {
             var geocoder = new google.maps.Geocoder();
             
@@ -32,25 +39,25 @@ $('document').ready(function() {
                     $currentLong = results[0].geometry.location.lng();
                 }
             });
+
+            //if the value on the var is not the same as the previous saved location
+	        //call the api for a new restaurant
+	    	if($loc != $savedlocation || checkChangeOnFilter()) {
+	            apiCaller($loc);
+	    	}
+	        else{
+				//remove the restaurant in the view and add it to the skipped list
+				$skippedList.push($jsonobject.businesses.splice($pos, 1)[0]);
+				//console.log($skippedList);
+				//TODO: 
+				//when restaurants list is empty, query API again
+				//with original length as offset. &offset=LENGTH or something like that.
+				updateRestaurant($jsonobject);
+			}
+	        $('#description-tab').tab('show');
+	        $("#favorite").removeClass("clickedFav");
+	        $("#heart").removeClass("clickedHeart");
         }
-        //if the value on the var is not the same as the previous saved location
-        //call the api for a new restaurant
-    	if($loc != $savedlocation) {
-            apiCaller($loc);
-    	}
-        else{
-			//remove the restaurant in the view and add it to the skipped list
-			$skippedList.push($jsonobject.businesses.splice($pos, 1)[0]);
-			//console.log($skippedList);
-			//TODO: 
-			//when restaurants list is empty, query API again
-			//with original length as offset. &offset=LENGTH or something like that.
-			updateRestaurant($jsonobject);
-		}
-        $('#description-tab').tab('show');
-        
-        $("#favorite").removeClass("clickedFav");
-        $("#heart").removeClass("clickedHeart");
     });
 	
     // Enter key pressed on the location bar
@@ -64,8 +71,8 @@ $('document').ready(function() {
 	//gps icon selects the user's current location
 	$('#gps').click(function(e) {
 		e.preventDefault();
-		geolocationCaller(function(loc, lat, long){
-			$("#location").val(loc);
+		geolocationCaller(function($loc, lat, long){
+			$("#location").val($loc);
             $currentLong = long;
             $currentLat = lat;
 		});
@@ -75,6 +82,7 @@ $('document').ready(function() {
     $(document).on('updateinfo', function(event, data){
         $jsonobject = data;
         $savedlocation = $('#location').val();
+        $savedFilters = getCurrentFilters();
         updateRestaurant($jsonobject);
     });
   
@@ -83,7 +91,6 @@ $('document').ready(function() {
 		$skippedContent = "";
 		for(var i=0; i<$skippedList.length; i++){
 			$skipped_image = $skippedList[i].image_url.replace(new RegExp("o.jpg$"), "ms.jpg");	// changes small image to large
-		  //console.log("FUCKIN URL SMALL: " + $image);
 			$skippedContent+= "<a href='" + i + "'><h3>" + $skippedList[i].name + "</h3></a>";
 			$skippedContent+= "<img class='img-thumbnail' src='" + $skipped_image + "'>";
 			$skippedContent+= "<hr>"
@@ -111,51 +118,20 @@ $('document').ready(function() {
 		$("#skipped").html("");
 	});
 	
-	loadExcludeList(); // load ids from cookie
-	
-	// adds a restaurant to exclude list, updates cookie, and updates result view
-	$("#exclude").click(function(e) {
-		e.preventDefault();
-		var exclude = $jsonobject.businesses.splice($pos, 1)[0]; //remove from results
-		$excludeList.push(exclude.id); //save id
-		addExcludeCookie(exclude.id);
-		updateRestaurant($jsonobject); //update result
-	});
-	
-	// Event handler for exclude list link
-	$("#viewexcluded").click(function(e){
-		e.preventDefault();
-		if($excludeList.length > 0) {
-			$excludedContent = ""; //clear html
-			for(var i = 0; i < $excludeList.length; i++) {
-				businessSearchCaller($excludeList[i]);
-			}
-		}
-	});
-	
 	// Trigger event handler that will fire when business search caller finishes
 	// Generates and updates HTMl content of exclude view when given business JSON object (data)
-	$(document).on('loadExcludedContent', function(event, data){
-		$excludedContent+= "<h3 class='" + data.id + "'>" + data.name + "</h3>";
-		$excludedContent+= "<img class='img-thumbnail " + data.id + "' src='" + data.image_url + "'>";
-		$excludedContent+= "<a href='#' id='" + data.id + "' class='text-muted  col-md-12 remove-exclude " + 
-			data.id + "'>Remove from exclude list</a></br></br>";
-		$excludedContent+= "<hr class='" + data.id + "'>";
-		$("#excluded").html($excludedContent);
-	});
+	// $(document).on('loadExcludedContent', function(event, data){
+	// 	$excludedContent+= "<h3 class='" + data.id + "'>" + data.name + "</h3>";
+	// 	$excludedContent+= "<img class='img-thumbnail " + data.id + "' src='" + data.image_url + "'>";
+	// 	$excludedContent+= "<a href='#' id='" + data.id + "' class='text-muted  col-md-12 remove-exclude " + 
+	// 		data.id + "'>Remove from exclude list</a></br></br>";
+	// 	$excludedContent+= "<hr class='" + data.id + "'>";
+	// 	$("#excluded").html($excludedContent);
+	// });
 	
 	// Event handler for when the user clicks "remove from exclude list" link
 	// Removes from exclude view and updates cookie
-	$(document).on('click', '.remove-exclude', function(e) {
-		e.preventDefault();
-		var business_id = $(this).attr('id'); //get business id from element
-		$("." + business_id).remove(); //remove from view
-		var index = $.inArray(business_id, $excludeList); //position in arr
-		if(index != -1) {
-			$excludeList.splice(index, 1); //remove from internal list
-			removeExcludeCookie(business_id); //update cookie
-		}
-	});
+	
 });
 
 /**  
@@ -168,8 +144,7 @@ function apiCaller($location, callback){
         url: "scripts/fusionscript.php",
         dataType : "json",
         // data that is processed by the php (arguments)
-        data: {location:$location
-              },
+        data: {location: $location,price: getCheckedPrices(),sort: getSortBy(),radius: getRadius(),categories: getCategories()},
         
         success:function(result){
             $(document).triggerHandler('updateinfo', [result]);
@@ -180,6 +155,61 @@ function apiCaller($location, callback){
         }
     });
 }
+
+
+function getCheckedPrices(){
+
+    $price_array = $("input[name=price]:checked");
+
+    $price = "";
+    $.each($price_array, function(i, $p){
+    	if(i == $price_array.length-1){
+    		$price = $price + $p.value;
+    	}
+    	else
+    		$price = $price + $p.value + ",";
+    });
+    return $price;
+}
+
+function getSortBy(){
+    return $("#sort-by").val()
+}
+
+function getRadius(){
+	// converts user input from miles to meters for the api
+	var radius = $("#filter-radius").val();
+	if(radius > 20){
+		$("#filter-radius").val(20);
+		return 20*1609;
+	}
+	else
+		return ($("#filter-radius").val())*1609;
+}
+
+function getCategories() {
+    return $("#filter-categories").val().toLowerCase().replace(" ", "");
+}
+
+
+function checkChangeOnFilter(){
+    if($savedFilters != getCurrentFilters()) {
+        return true;
+    }
+    return false;
+}
+
+
+// checks the current filters and returns them packaged in a JSON object for comparison
+function getCurrentFilters(){
+	var filters = {};
+	filters['price'] = getCheckedPrices();
+	filters['radius'] = getRadius();
+    filters['categories'] = getCategories();
+    filters['sort'] = getSortBy()
+	return JSON.stringify(filters);
+}
+
 
 // updates Restaurant view taking in a jsonobject from the api
 function updateRestaurant(jsonobj){
@@ -218,9 +248,15 @@ function updateRestaurant(jsonobj){
           for(var i = 1; i < $categories.length; i++){
           	$categories_content += ", "+$categories[i].title;
           }
+           
+           if($image == ""){
+               $("#image").attr('src',"img/default-rest-pic.jpg");
+           }
+           else {
+               $("#image").attr('src',$image);
+           }
           
           $("#name").html($name);
-          $("#image").attr('src',$image);
           $("#rating").attr('src', $rating);
           $("#img-link").attr('href', $url);
           $("#see-more").attr('href', $url);
@@ -273,8 +309,14 @@ function simpleUpdate(restaurantObj){
 		$categories_content += ", "+$categories[i].title;
 	}
     
+       if($image == ""){
+            $("#image").attr('src',"img/default-rest-pic.jpg");
+       }
+       else {
+           $("#image").attr('src',$image);
+       }
+    
     $("#name").html($name);
-    $("#image").attr('src',$image);
     $("#rating").attr('src', $rating);
     $("#img-link").attr('href', $url);
     $("#see-more").attr('href', $url);
@@ -431,73 +473,4 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, 
 			}
 		}
 	);
-}
-
-/* Adds a restaurant id to the excluded cookie. */
-function addExcludeCookie(id) {
-	var newCookie = "";
-	var existingCookies = document.cookie; //existing cookies
-	if (existingCookies.length == 0) { //new cookie is first cookie
-		newCookie = "excluded=" + id + ";";
-	}
-	else { //adding to existing cookies
-		newCookie = existingCookies + " " + id + ";";
-	}
-	document.cookie = newCookie + $expireStr + "path=/";
-}
-
-/* Removes a restaurant id from the excluded cookie, 
-   by placing the ids in an array, making the given id an empty
-   string, and re-saving the cookie.
- */
-function removeExcludeCookie(id) {
-	var exclude = document.cookie.split(';'); //exclude list (as one string)
-	var excludeArr = exclude[0].split(' '); //split list into array
-	excludeArr[0] = excludeArr[0].substring(9, excludeArr[0].length); //remove "excluded=" from first id
-	//find and un-exclude restaurant
-	for(var i = 0; i < excludeArr.length; i++) {
-        if(excludeArr[i] === id) {
-			excludeArr[i] = ""; //delete cookie
-		}
-    }
-	var newCookie = "excluded=";
-	for(var i = 0; i <excludeArr.length; i++) { //reconstruct cookie
-        newCookie += " " + excludeArr[i];
-    }
-	newCookie += "; path=/;" + $expireStr;
-	document.cookie = newCookie; //re-save excluded cookie
-}
-
-/* Loads restaurant ids from the excluded cookie and adds them to $excludeList */
-function loadExcludeList() {
-	var exclude = document.cookie;
-	if (exclude.length != 0) {
-		exclude = exclude.split(';'); //exclude list as one long string
-		var excludeArr = exclude[0].split(' '); //split ids
-		for(var i = 0; i < excludeArr.length; i++) {
-			$excludeList.push(excludeArr[i]);
-		}
-		$excludeList[0] = $excludeList[0].substring(9, $excludeList[0].length); //remove "excluded=" in first id
-	}
-}
-
-/* Calls Yelp Business API with restaurant id, then calls another
-   function to generate the HTML content in the excluded list */
-function businessSearchCaller($id ) {
-	$.ajax({
-        type: 'GET',
-        url: "scripts/businessSearch.php",
-        dataType : "json",
-		
-        // data that is processed by the php (arguments)
-        data: {business_id:$id
-			  },
-        
-        success:function(result){
-			$(document).triggerHandler('loadExcludedContent', [result]); //call html generator
-        },
-        error:function(){
-            console.log("Failed to load php");
-        }
-    });
 }

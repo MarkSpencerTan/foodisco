@@ -32,7 +32,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.htm"><img alt="Brand" height="30" src="http://foodisco.marktan.us/img/foodisco_icon.png" style="border-radius:5px; margin-top:-5px;"></a>
+        <a class="navbar-brand" href="index.html"><img alt="Brand" height="30" src="http://foodisco.marktan.us/img/foodisco_icon.png" style="border-radius:5px; margin-top:-5px;"></a>
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -140,35 +140,68 @@
                 </button>
                 <div id="filter-dropdown" class="dropdown-menu pull-right">
                   <form>
+                      
+                    <!-- Filter Radius -->
                     <div class="form-group row">
-                      <label for="filter-radius" class="col-sm-2 col-form-label col-form-label-sm">Radius</label>
-                      <div class="col-sm-10">
-                        <input class="form-control" type="number" value="42" id="filter-radius">
+                      <label for="filter-radius" class="col-sm-12 col-form-label col-form-label-sm">Max Distance (mi)</label><br>
+                      <div class="col-sm-12">
+                        <input class="form-control" type="number" value="0" min="0" max="20" id="filter-radius">
+                      </div>
+                      <div class="col-sm-12">
+                        <small class="form-text text-muted">Default value of 0 turns off this filter.</small>
                       </div>
                     </div>
-                    <div id="filter-rating">
-                      <label for="filter-radius" class="col-sm-2 col-form-label col-form-label-sm">Price</label>
+                    
+                    <!-- Filter price -->
+                    <div id="filter-price">
+                    <label for="filter-radius" class="col-form-label col-form-label-sm">Price</label>
+                    <div class="col-sm-12">
                       <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"> $
+                          <input class="form-check-input" type="checkbox" id="price1" name="price" value="1"> $
                         </label>
                       </div>
                       <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2"> $$
+                          <input class="form-check-input" type="checkbox" id="price2" name="price" value="2"> $$
                         </label>
                       </div>
                       <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3"> $$$
+                          <input class="form-check-input" type="checkbox" id="price3" name="price" value="3"> $$$
                         </label>
                       </div>
                       <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3"> $$$$
+                          <input class="form-check-input" type="checkbox" id="price4" name="price" value="4"> $$$$
                         </label>
                       </div>
                     </div>
+                  </div><br><br>
+
+                  <!-- Filter Sort By(Prioritize) -->
+                  <div class="form-group ">
+                    <label for="sel1">Prioritize By</label>
+                    <select class="form-control input-sm" id="sort-by">
+                      <option value="best_match">Best Match</option>
+                      <option value="rating">Rating</option>
+                      <option value="review_count">Review Count</option>
+                      <option value="distance">Distance</option>
+                    </select>
+                  </div><br><br>
+                    
+                  <!-- Filter Category -->
+                  <div class="form-group row">
+                    <label for="filter-categories" class="col-sm-12 col-form-label col-form-label-sm">Categories</label><br>
+                    <div class="col-sm-12">
+                      <input class="form-control input-sm" type="text" id="filter-categories" value="">
+                    </div>
+                    <div class="col-sm-12">
+                      <small class="form-text text-muted">Separate categories with commas</small>
+                    </div>
+                  </div>
+                      
+                      
                   </form>
                 </div>
               </span>
@@ -319,12 +352,17 @@
         async defer></script>
   
     <script src="js/foodisco.js"></script>
-<!--		<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>-->
 		<script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
 		<script src="js/login.js"></script>
 	  <script src="js/socialmedia.js"></script>
     <script type="text/javascript" src="js/database.js"></script>
-<!--	  	<script src="js/fbsignin.js"></script>-->
+    <script type="text/javascript">
+      // Stops parent dropdown from closing
+      $(document).on('click', '#sort-by', function (e) {
+        e.stopPropagation();
+      });
 
+
+    </script>
   </body>
 </html>
