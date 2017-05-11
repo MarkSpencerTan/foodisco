@@ -204,13 +204,13 @@ a{color:black;}
     float:none !important;
 }
 
-#favorite:hover, .clickedFav{
-    color:white !important;
-    background-color:#e8002e !important;
+#favorite:hover{
+    color:white;
+    background-color:#e8002e;
 }
 
-#favorite:hover #heart, .clickedHeart{
-    color:white !important;
+#favorite:hover #heart{
+    color:white;
 }
 
 a:hover{

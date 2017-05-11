@@ -7,8 +7,10 @@ $skippedList = [];
 $currentLong = 100;
 $currentLat = -100;
 $excludeList = []; //yelp ids of excluded restaurants
+$favoriteList = []
 $expireStr = "expires=Thu, 16 Nov 2017 12:00:00 UTC;"; //for cookies
 $excludedContent = ""; //html content for excluded view
+$favoriteContent = "";
 
 //The Main of the script
 $('document').ready(function() {
@@ -24,8 +26,6 @@ $('document').ready(function() {
 	            $currentLat = lat;
 	            apiCaller($loc);
 	            $('#description-tab').tab('show');
-		        $("#favorite").removeClass("clickedFav");
-		        $("#heart").removeClass("clickedHeart");
 			});
         }
 
@@ -55,8 +55,6 @@ $('document').ready(function() {
 				updateRestaurant($jsonobject);
 			}
 	        $('#description-tab').tab('show');
-	        $("#favorite").removeClass("clickedFav");
-	        $("#heart").removeClass("clickedHeart");
         }
     });
 	
@@ -83,7 +81,7 @@ $('document').ready(function() {
         $jsonobject = data;
         $savedlocation = $('#location').val();
         $savedFilters = getCurrentFilters();
-        updateRestaurant($jsonobject);
+        updateRestaurant($jsonobject);        
     });
   
     // Event handler for skip list link. Will display the items from the $skippedList
@@ -217,68 +215,84 @@ function updateRestaurant(jsonobj){
     
     $repeat = true;
     do {
-       $pos = Math.floor(Math.random() * $restaurants.length);  //chooses random index
-       console.log("Pos: "+$pos);
-       console.log($restaurants[$pos]);
+        $pos = Math.floor(Math.random() * $restaurants.length);  //chooses random index
+        console.log("Pos: "+$pos);
+        console.log($restaurants[$pos]);
 
        //console.log("length: " + $restaurants.length);
-       $RESTAURANT_OBJ = $restaurants[$pos];
+        $RESTAURANT_OBJ = $restaurants[$pos];
        
-       $id = $RESTAURANT_OBJ.id;
-         
-       if($.inArray($id, $excludeList) == -1) { //checks if result is in excludeList
-          $image = $RESTAURANT_OBJ.image_url.replace(new RegExp("o.jpg$"), "ls.jpg");	// changes small image to large
-          $name = $RESTAURANT_OBJ.name;
-          $phone = $RESTAURANT_OBJ.display_phone;
-          $addressObject = $RESTAURANT_OBJ.location.display_address;
-          $city = $RESTAURANT_OBJ.location.city;
-				  $rating = "img/rating/" + $RESTAURANT_OBJ.rating + ".png";
-				 	$review_count = $RESTAURANT_OBJ.review_count + " Reviews";
-          $categories = $RESTAURANT_OBJ.categories;
-				  
-				  $price = "Price: <span id='price_green'>" + $RESTAURANT_OBJ.price +"</span><span id=price_gray>";
-					for(var i = 0; i < (4-$RESTAURANT_OBJ.price.length); i++){
-						$price += "$";
-					}
-					$price += "</span>";
-				
-          $url = $RESTAURANT_OBJ.url;
+        $id = $RESTAURANT_OBJ.id;
 
-          $categories_content = $categories[0].title;
-          for(var i = 1; i < $categories.length; i++){
-          	$categories_content += ", "+$categories[i].title;
-          }
-           
-           if($image == ""){
-               $("#image").attr('src',"img/default-rest-pic.jpg");
-           }
-           else {
-               $("#image").attr('src',$image);
-           }
-          
-          $("#name").html($name);
-          $("#rating").attr('src', $rating);
-          $("#img-link").attr('href', $url);
-          $("#see-more").attr('href', $url);
-          $("#address").text($addressObject);
-          $("#phone").text($phone);
-          $("#category").text($categories_content);
-				  $("#price").html($price);
-				  $("#review_count").text($review_count);
-          
-          
-          //Collapses The Output Div
-          $("#output").collapse("toggle");
-          $("#output").removeAttr("id");
-          
-          //replaces Search Button to Disco Again
-          $("#search").text("Disco Again");
-          $repeat = false;
-       }
-       else {
-          //console.log($pos + " result was in exclude list");
-          $jsonobject.businesses.splice($pos, 1)[0]; //removes restaurant from results
-       }
+		if($.inArray($id, $excludeList) == -1) { //checks if result is in excludeList
+			$image = $RESTAURANT_OBJ.image_url.replace(new RegExp("o.jpg$"), "ls.jpg");	// changes small image to large
+			$name = $RESTAURANT_OBJ.name;
+			$phone = $RESTAURANT_OBJ.display_phone;
+			$addressObject = $RESTAURANT_OBJ.location.display_address;
+			$city = $RESTAURANT_OBJ.location.city;
+			$rating = "img/rating/" + $RESTAURANT_OBJ.rating + ".png";
+			$review_count = $RESTAURANT_OBJ.review_count + " Reviews";
+			$categories = $RESTAURANT_OBJ.categories;
+
+			$price = "Price: <span id='price_green'>" + $RESTAURANT_OBJ.price +"</span><span id=price_gray>";
+				for(var i = 0; i < (4-$RESTAURANT_OBJ.price.length); i++){
+				$price += "$";
+			}
+			$price += "</span>";
+				
+			$url = $RESTAURANT_OBJ.url;
+
+			$categories_content = $categories[0].title;
+			for(var i = 1; i < $categories.length; i++){
+				$categories_content += ", "+$categories[i].title;
+			}
+
+			if($image == ""){
+			   $("#image").attr('src',"img/default-rest-pic.jpg");
+			}
+			else {
+			   $("#image").attr('src',$image);
+			}
+
+			$("#name").html($name);
+			$("#rating").attr('src', $rating);
+			$("#img-link").attr('href', $url);
+			$("#see-more").attr('href', $url);
+			$("#address").text($addressObject);
+			$("#phone").text($phone);
+			$("#category").text($categories_content);
+			$("#price").html($price);
+			$("#review_count").text($review_count);
+
+
+			//Collapses The Output Div
+			$("#output").collapse("toggle");
+			$("#output").removeAttr("id");
+
+			//replaces Search Button to Disco Again
+			$("#search").text("Disco Again");
+			$repeat = false;
+
+			// check if object is in favorite list, if not remove the class
+			var found = false;
+			$.each($favoriteList, function(i, restaurant){
+				if($RESTAURANT_OBJ.id === restaurant.id){
+					$("#favorite").addClass("clickedFav");
+	  				$("#heart").addClass("clickedHeart");
+	  				found = true;
+	  				console.log("found a match")
+				}
+			})
+			if(!found){
+				$("#favorite").removeClass("clickedFav");
+  				$("#heart").removeClass("clickedHeart");
+  				console.log("did not find a match")
+			}
+      	}
+		else {
+		  //console.log($pos + " result was in exclude list");
+		  $jsonobject.businesses.splice($pos, 1)[0]; //removes restaurant from results
+		}
     } while ($repeat == true && $restaurants.length > 0);
 }
 
@@ -429,21 +443,6 @@ function initMap() {
 			map.setCenter(pointA);
 		});
     
-          //Marker info window to display information on mrker
-//        var markerInfoWindow = new google.maps.InfoWindow({
-//            content: "You"
-//        });
-//        google.maps.event.addListener(marker, "click", function(e) {
-//            markerInfoWindow.open(map, this);
-//        });
-//        
-//        var restInfoWindow = new google.maps.InfoWindow({
-//            content: $RESTAURANT_OBJ.name
-//        });
-//        google.maps.event.addListener(restMarker, "click", function(e) {
-//            restInfoWindow.open(map, this);
-//        });
-
 		calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB);
 	
 		// include directions

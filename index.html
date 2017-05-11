@@ -110,11 +110,9 @@
                       </div>
                   </li>
                   <li class="divider navbar-login-session-bg"></li>
-                  <li><a href="#">User stats <span class="glyphicon glyphicon-stats pull-right"></span></a></li>
+                  <li><a href="#" id="user_view_excluded" data-toggle="modal" data-target="#excluded_modal">Excluded Restaurants <span id="excluded_count" class="badge pull-right">0</span></a></li>
                   <li class="divider"></li>
-                  <li><a href="#">Excluded Restaurants <span class="badge pull-right"> 42 </span></a></li>
-                  <li class="divider"></li>
-                  <li><a href="#">Favorite Restaurants <span class="glyphicon glyphicon-heart pull-right"></span></a></li>
+                  <li><a href="#" id="user_view_favorites" data-toggle="modal" data-target="#favorite_modal">Favorite Restaurants <span id="favorite_count" class="badge pull-right">0</span></a></li>
                   <li class="divider"></li>
                   <li><a href="#" id="sign-out">Sign Out <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
                 </ul>
@@ -280,25 +278,45 @@
        </div>
       </div>
       
-	<!-- Excluded modal -->
-	<div class="modal fade" id="excluded_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-       <div class="modal-dialog modal-sm" role="document">
-         <div class="modal-content">
-           <div class="modal-header">
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-             </button>
-             <h4 class="modal-title" id="myModalLabel">Excluded Restaurants</h4>
-           </div>
-           <div id="excluded" class="modal-body">
-             <p>No excluded restaurants</p>
-           </div>
-           <div class="modal-footer">
-			 <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
-           </div>
+  	<!-- Excluded modal -->
+  	<div class="modal fade" id="excluded_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-sm" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+           <h4 class="modal-title" id="myModalLabel">Excluded Restaurants</h4>
+         </div>
+         <div id="excluded" class="modal-body">
+           <p>No excluded restaurants</p>
+         </div>
+         <div class="modal-footer">
+  	 <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
          </div>
        </div>
-      </div>
+     </div>
+    </div>
+
+    <!-- Excluded modal -->
+    <div class="modal fade" id="favorite_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-sm" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+           <h4 class="modal-title" id="myModalLabel">Favorite Restaurants</h4>
+         </div>
+         <div id="favorite_content" class="modal-body">
+           <p>No favorite restaurants</p>
+         </div>
+         <div class="modal-footer">
+     <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+    </div>
 
 	  <!-- About modal -->
       <div class="modal fade" id="about_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

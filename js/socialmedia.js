@@ -11,10 +11,13 @@ function initApp() {
       $("#profile_dropdown").show();
       updateProfile(user);
       $LOGGED_USER = user;
+      $("#favorite").show();
+
 	} else {
 	  // User is signed out.
 	  $LOGGED_IN = false;
 	  $LOGGED_USER = null;
+	  $("#favorite").hide();
 	}
   });
 }
@@ -42,9 +45,11 @@ $("#sign-out").click(function(e){
 	$("#login_dropdown").show();
 	alert("you have been signed out.")
 	$LOGGED_IN = false;
+	$("#favorite").hide();
 });
 
 $("#profile_dropdown").hide();
+$("#favorite").hide();
 
 
 function signIn(socialmedia){
@@ -70,6 +75,7 @@ function signIn(socialmedia){
 
 			$("#profile_dropdown").show();
 			$("#login_dropdown").hide();
+			$("#favorite").show()
 			$LOGGED_IN = true;
 
 			console.log(user);
@@ -112,4 +118,8 @@ function updateProfile(user){
 	// Update Email
 	var email = user.email;
 	$("#profile_email").text(email);
+
+	// load exclude and favorite lists
+	loadExcludeList()
+	loadFavoriteList()
 }
