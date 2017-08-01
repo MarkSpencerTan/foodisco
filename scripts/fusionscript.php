@@ -17,11 +17,12 @@
 // OAuth credential placeholders that must be filled in by users.
 // You can find them on
 // https://www.yelp.com/developers/v3/manage_app
-$CLIENT_ID = "Eau4PcIZ32bFQeghVHOMgg";
-$CLIENT_SECRET = "iR64GtAfGI0PbLBpYL6FPg19tZVc0UCGGri1b8PMBJpahMTGOGjiB2x6VZlxAcuK";
+include("keys/fusion_keys.php");
+
 // Complain if credentials haven't been filled out.
-// assert($CLIENT_ID, "Please supply your client_id.");
-// assert($CLIENT_SECRET, "Please supply your client_secret.");
+assert($CLIENT_ID, "Please supply your client_id.");
+assert($CLIENT_SECRET, "Please supply your client_secret.");
+
 // API constants, you shouldn't have to change these.
 $API_HOST = "https://api.yelp.com";
 $SEARCH_PATH = "/v3/businesses/search";
@@ -183,21 +184,10 @@ function query_api($term, $location, $price, $radius, $categories, $sort) {
     $response = search($bearer_token, $term, $location, $price, $radius, $categories, $sort);
     echo $response;
 }
+
 /**
  * User input is handled here 
  */
-// $longopts  = array(
-//     "term::",
-//     "location::",
-// );
-function debug_to_console( $data ) {
-    $output = $data;
-    if ( is_array( $output ) )
-        $output = implode( ',', $output);
-
-    echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
-}
-
 $term = "restaurants";
 $location= $_GET['location'];
 $price = $_GET['price'];

@@ -147,7 +147,10 @@ function apiCaller($location, callback){
         success:function(result){
             $(document).triggerHandler('updateinfo', [result]);
         },
-        error:function(){
+        error:function(jqXHR, status, errorThrown){
+        	console.log(jqXHR.responseText);
+    		console.log(status);
+    		console.log(errorThrown);
             console.log("Failed to load php");
             alert("Please enter a valid/more accurate location");
         }
