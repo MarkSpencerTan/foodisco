@@ -267,7 +267,6 @@ function updateRestaurant(jsonobj){
 			$("#price").html($price);
 			$("#review_count").text($review_count);
 
-
 			//Collapses The Output Div
 			$("#output").collapse("toggle");
 			$("#output").removeAttr("id");
@@ -340,8 +339,8 @@ function simpleUpdate(restaurantObj){
     $("#address").text($addressObject);
     $("#phone").text($phone);
     $("#category").text($categories_content);
-	  $("#price").html($price);
-		$("#review_count").text($review_count);
+	$("#price").html($price);
+	$("#review_count").text($review_count);
 }
 
 
@@ -349,23 +348,21 @@ function geolocationCaller(autofillCallback){
 	$.get('../scripts/keys/geolocationkey.txt', function(data) {
    		$GEOLOCATION_KEY = data;
 		$.ajax({
-		type: 'POST',
-		url: "https://www.googleapis.com/geolocation/v1/geolocate?key=" + $GEOLOCATION_KEY,
-		dataType : "json",
-		success:function(result){
-			var locJSON = JSON.stringify(result, null, 4);
-			var locObj = JSON.parse(locJSON);
-            
-            // reverse geocode the lat and long to fill in the address on the location bar.
-			reverseGeocodingCaller(locObj.location.lat, locObj.location.lng, autofillCallback);
-		},
-		error:function(){
-			console.log("Geolocation failed");
-		}
-	});
+			type: 'POST',
+			url: "https://www.googleapis.com/geolocation/v1/geolocate?key=" + $GEOLOCATION_KEY,
+			dataType : "json",
+			success:function(result){
+				var locJSON = JSON.stringify(result, null, 4);
+				var locObj = JSON.parse(locJSON);
+	            
+	            // reverse geocode the lat and long to fill in the address on the location bar.
+				reverseGeocodingCaller(locObj.location.lat, locObj.location.lng, autofillCallback);
+			},
+			error:function(){
+				console.log("Geolocation failed");
+			}
+		});
 	}, 'text');
-	
-	
 }
 
 function reverseGeocodingCaller(lat, lng, autofillCallback){
