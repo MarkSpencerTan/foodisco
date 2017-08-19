@@ -1,6 +1,5 @@
 # Foodisco Webapp
-====================
-
+--------------------
 ## Project Description
 --------------------
 The goal of Foodisco is to improve the user experience of finding a place
