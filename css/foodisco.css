@@ -129,6 +129,16 @@ a.btn{
 	height: 400px;
 }
 
+#map-app-link{
+    padding: 10px;
+    background-color: #e8002e;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    margin: 10px;
+    display: inline-block; 
+}
+
 .adp-directions{
 	width: 100%;
 }

@@ -400,7 +400,6 @@ function initMap() {
 			$currentLong = place.geometry.location.lng();
 		});
 
-
 		map = new google.maps.Map(document.getElementById('map'), {
 			  zoom: 13,
 		});
@@ -414,6 +413,9 @@ function initMap() {
 		var pointA = new google.maps.LatLng($currentLat, $currentLong);
 		var pointB = new google.maps.LatLng(restLat, restLng);
 
+		// Update the link to open maps in native app
+		$("#map-app-link").attr('href', 
+			'https://www.google.com/maps/dir/?api=1&parameters&destination=' + restLat + "," + restLng)
 
 		marker = new google.maps.Marker({
 			position: pointA,
@@ -450,7 +452,7 @@ function initMap() {
 		// this will clear the old directions panel first to prevent directions overflowing.
 		document.getElementById('right-panel').innerHTML = '';
 		// display directions
-    directionsDisplay.setPanel(document.getElementById('right-panel'));
+    	directionsDisplay.setPanel(document.getElementById('right-panel'));
 	
 		// Resizes panel height dynamically depending on map content
 		$panelsize = $('#map').height() + $('#right-panel').height();
