@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 /**
  * Yelp Fusion API code sample.

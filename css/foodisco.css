@@ -322,11 +322,36 @@ div#filter-dropdown {
 
 /*Css for Mobile*/
 @media screen and (max-width:400px){
-    .output{
-      margin-top: -50px;
+    .jumbotron img.img-responsive.center-block{
+      margin-top:-50px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .container .jumbotron, .container-fluid .jumbotron, .jumbotron div.col-sm-12{
+      padding-right: 0px !important;
+      padding-left: 0px !important;
+    }
+    .jumbotron .output{
+      margin-right: 0px;
+      margin-left: 0px;
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+    .output.collapse.in{
+      margin:0px;
+      margin-top: -30px;
+      padding: 0px;
     }
     #image{
-      margin-bottom:20px;
+      margin: -20px;
+      width: 100%;
+      float: none;
+      height: 200px;
+      object-fit: cover;
+    }
+    h4{
+      font-size: 12px;
+      margin:5px;
     }
     #rating{
       height:20px;
@@ -334,7 +359,32 @@ div#filter-dropdown {
     #address{
       margin-bottom:20px;
     }
+    #search{
+      position: fixed;
+      bottom: 5%;
+      left: 50%;
+      margin-left: -60px;
+      border-radius: 500px;
+      z-index: 999999;
+      width: 120px;
+      font-size: 13px;
+    }
+    #name{
+      font-size: 20px;
+    }
     p.text-muted{
       display:none;
+    }
+    button#filter{
+        width: 30px;
+        font-size: 0px;
+        height: 33px;
+    }
+    .nav-tabs>li>a{
+        font-size: 12px;
+    }
+    #restaurant-desc, #viewskipped, #viewexcluded{
+        text-align: center;
+        font-size: 12px;
     }
 }
