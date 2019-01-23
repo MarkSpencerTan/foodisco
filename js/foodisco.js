@@ -170,6 +170,12 @@ function getCheckedPrices(){
     	else
     		$price = $price + $p.value + ",";
     });
+
+    // check if price is empty, if so, change it to "1,2,3,4"
+    if ($price == "") {
+    	$price = "1,2,3,4";
+    }
+    console.log("price: " + $price)
     return $price;
 }
 
